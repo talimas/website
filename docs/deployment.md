@@ -6,13 +6,20 @@ personal account `talimas`, so its owner must perform the one-time Pages setup.
 Normal collaborators can push the workflow and content but cannot administer
 Pages settings on a personal-account repository.
 
+As verified on 2026-08-03, `talimas/website` is private. GitHub Pages from a
+private personal-account repository requires GitHub Pro, and the published
+Pages site is still public. If Talita does not have GitHub Pro, she must either
+make this repository public or upgrade before the steps below.
+
 ## One-time GitHub owner step
 
 Talita must open <https://github.com/talimas/website/settings/pages> and:
 
-1. Under **Build and deployment**, set **Source** to **GitHub Actions**.
-2. Under **Custom domain**, enter `talita.town` and click **Save**.
-3. Tell Ewan when GitHub shows the domain as attached. A temporary DNS-check
+1. If GitHub shows a plan gate because the repository is private, choose whether
+   to make the repository public or upgrade to GitHub Pro.
+2. Under **Build and deployment**, set **Source** to **GitHub Actions**.
+3. Under **Custom domain**, enter `talita.town` and click **Save**.
+4. Tell Ewan when GitHub shows the domain as attached. A temporary DNS-check
    failure is expected until the Cloudflare cutover below.
 
 The deployment workflow can then be run manually from the repository's
