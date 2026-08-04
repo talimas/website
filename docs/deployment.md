@@ -27,21 +27,20 @@ The deployment workflow can then be run manually from the repository's
 
 After DNS and certificate provisioning finish, Talita should return to the
 Pages settings and enable **Enforce HTTPS** if GitHub has not enabled it
-automatically.
+automatically. This requires repository-owner Pages administration; a normal
+collaborator cannot make the change through the GitHub API.
 
 ## Cloudflare DNS cutover
 
 Do not point DNS at GitHub before `talita.town` is saved as the repository's
-custom domain. As verified on 2026-08-03, the `talita.town` Cloudflare zone is
-active in Ewan's account and still contains Porkbun parking records.
+custom domain. The `talita.town` Cloudflare zone is active in Ewan's account.
 
-Remove these parking records:
+Completed on 2026-08-04: the Porkbun parking records were removed and the
+following DNS-only GitHub Pages records are live. Keep these records DNS-only:
+proxying GitHub Pages through Cloudflare caused a Cloudflare 525 TLS handshake
+failure.
 
-- Apex `A` records to `207.207.210.107` and `207.207.210.229`
-- `www` CNAME to `pixie.porkbun.com`
-- Wildcard `*` CNAME to `pixie.porkbun.com`
-
-Create these **DNS only** records with TTL **Auto**:
+The required **DNS only** records use TTL **Auto**:
 
 | Type  | Name  | Target                |
 | ----- | ----- | --------------------- |
@@ -55,9 +54,7 @@ Create these **DNS only** records with TTL **Auto**:
 | AAAA  | `@`   | `2606:50c0:8003::153` |
 | CNAME | `www` | `talimas.github.io`   |
 
-Keep the records DNS-only while GitHub validates the domain and provisions its
-certificate. GitHub Pages will redirect `www.talita.town` to the configured
-apex domain.
+GitHub Pages redirects `www.talita.town` to the configured apex domain.
 
 ## Verification
 
@@ -68,6 +65,10 @@ The launch is complete only when all of the following are true:
 - <https://talita.town> returns the generated Quartz homepage over HTTPS.
 - <https://www.talita.town> redirects to <https://talita.town>.
 - GitHub Pages reports the custom domain as verified and HTTPS as enforced.
+
+Readback on 2026-08-04: the first two checks pass; GitHub Pages has
+`talita.town` attached and the certificate serves HTTPS, but **Enforce HTTPS**
+still needs the repository owner to turn it on in Pages settings.
 
 ## If Ewan needs repository-admin access
 

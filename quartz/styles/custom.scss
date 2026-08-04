@@ -1,3 +1,126 @@
 @use "./variables.scss" as *;
 
-// put your custom CSS here!
+// Talita's Town — a rose garden / Art Nouveau treatment over Quartz's defaults.
+
+:root {
+  --nouveau-cream: #fff7fa;
+  --nouveau-rose: #b62f6e;
+  --nouveau-petal: #f8d8e5;
+  --nouveau-ink: #3f1830;
+  --nouveau-vine: #82546b;
+}
+
+body {
+  background:
+    radial-gradient(circle at 8% 12%, rgba(246, 185, 209, 0.36), transparent 24rem),
+    radial-gradient(circle at 92% 8%, rgba(227, 113, 160, 0.18), transparent 22rem),
+    var(--light);
+}
+
+a {
+  text-decoration-color: color-mix(in srgb, var(--secondary) 45%, transparent);
+  text-underline-offset: 0.18em;
+
+  &:hover {
+    color: var(--tertiary);
+    text-decoration-thickness: 2px;
+  }
+}
+
+h1,
+h2,
+h3,
+.page-title,
+.article-title {
+  color: var(--secondary);
+  font-weight: 600;
+  letter-spacing: 0.015em;
+}
+
+.article-title {
+  font-size: clamp(2.9rem, 8vw, 5.4rem);
+  font-weight: 500;
+  line-height: 0.9;
+  text-wrap: balance;
+
+  &::after {
+    display: block;
+    margin-top: 0.42rem;
+    color: var(--tertiary);
+    content: "✦";
+    font-family: var(--bodyFont);
+    font-size: 0.26em;
+  }
+}
+
+.page-title a {
+  font-style: italic;
+  letter-spacing: 0.03em;
+}
+
+.center,
+.left.sidebar,
+.right.sidebar {
+  border-color: color-mix(in srgb, var(--gray) 55%, transparent);
+}
+
+.center article {
+  font-size: 1.06rem;
+  line-height: 1.8;
+}
+
+.markdown-preview-view hr {
+  width: min(17rem, 72%);
+  height: 4.5rem;
+  margin: 2.3rem auto;
+  border: 0;
+  background: url("/static/ornamental-divider.svg") center / contain no-repeat;
+  filter: invert(29%) sepia(28%) saturate(2104%) hue-rotate(286deg) brightness(88%) contrast(91%);
+  opacity: 0.78;
+}
+
+button,
+input,
+textarea {
+  border-color: color-mix(in srgb, var(--gray) 75%, transparent);
+}
+
+button:hover,
+input:focus,
+textarea:focus {
+  border-color: var(--tertiary);
+}
+
+blockquote {
+  border-color: var(--tertiary);
+  background: color-mix(in srgb, var(--lightgray) 38%, transparent);
+}
+
+code {
+  color: var(--secondary);
+}
+
+body[data-slug="index"] .content-meta {
+  display: none;
+}
+
+body[data-slug="index"] .page-header,
+body[data-slug="index"] article {
+  text-align: center;
+}
+
+body[data-slug="index"] article {
+  margin-top: 2.5rem;
+
+  p:first-of-type {
+    color: var(--darkgray);
+    font-size: clamp(1.18rem, 2.4vw, 1.5rem);
+  }
+}
+
+:root[saved-theme="dark"] body {
+  background:
+    radial-gradient(circle at 8% 12%, rgba(170, 56, 112, 0.28), transparent 24rem),
+    radial-gradient(circle at 92% 8%, rgba(243, 154, 192, 0.12), transparent 22rem),
+    var(--light);
+}

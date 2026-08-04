@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=./quartz/plugins/quartz-plugins.schema.json
 configuration:
-  pageTitle: Quartz 5
+  pageTitle: Talita's Town
   pageTitleSuffix: ""
   enableSPA: true
   enablePopovers: true
@@ -16,30 +16,31 @@ configuration:
     fontOrigin: googleFonts
     cdnCaching: true
     typography:
-      header: Schibsted Grotesk
-      body: Source Sans Pro
-      code: IBM Plex Mono
+      title: Cormorant Garamond
+      header: Cormorant Garamond
+      body: Lora
+      code: DM Mono
     colors:
       lightMode:
-        light: "#faf8f8"
-        lightgray: "#e5e5e5"
-        gray: "#b8b8b8"
-        darkgray: "#4e4e4e"
-        dark: "#2b2b2b"
-        secondary: "#284b63"
-        tertiary: "#84a59d"
-        highlight: rgba(143, 159, 169, 0.15)
-        textHighlight: "#fff23688"
+        light: "#fff7fa"
+        lightgray: "#f2dce6"
+        gray: "#d7aabf"
+        darkgray: "#82546b"
+        dark: "#3f1830"
+        secondary: "#b62f6e"
+        tertiary: "#de78a2"
+        highlight: rgba(236, 139, 181, 0.18)
+        textHighlight: "#ffd8e788"
       darkMode:
-        light: "#161618"
-        lightgray: "#393639"
-        gray: "#646464"
-        darkgray: "#d4d4d4"
-        dark: "#ebebec"
-        secondary: "#7b97aa"
-        tertiary: "#84a59d"
-        highlight: rgba(143, 159, 169, 0.15)
-        textHighlight: "#b3aa0288"
+        light: "#281523"
+        lightgray: "#4c2940"
+        gray: "#87516d"
+        darkgray: "#f0c7d8"
+        dark: "#fff4f8"
+        secondary: "#f39ac0"
+        tertiary: "#d970a0"
+        highlight: rgba(239, 130, 178, 0.22)
+        textHighlight: "#ff9bc780"
 plugins:
   - source: "@quartz-community/created-modified-date"
     enabled: true
@@ -248,7 +249,7 @@ plugins:
         - tags
         - aliases
       excludedProperties: []
-      hidePropertiesView: false
+      hidePropertiesView: true
       delimiters: ---
       language: yaml
     order: 5
