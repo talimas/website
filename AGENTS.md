@@ -10,8 +10,9 @@ Quartz repository is the read-only `upstream` used for framework upgrades.
 
 - Keep the site on Quartz 5 unless Ewan explicitly requests a migration.
 - `content/` is the authored site content. Preserve it across upgrades.
-- Keep secrets and Cloudflare credentials out of Git. Hosting is not configured
-  yet; do not publish or change DNS without an explicit request.
+- Keep secrets and Cloudflare credentials out of Git. The Pages workflow is
+  prepared, but publishing still requires Talita's one-time owner setup. Do not
+  cut DNS over before GitHub has attached `talita.town` to the repository.
 - Treat `public/`, `node_modules/`, and `.quartz/` as generated state.
 - Do not force-push or rewrite the friend-owned remote's history.
 
@@ -36,6 +37,8 @@ only when `public/index.html` is emitted.
 - `quartz.config.yaml`: site, theme, and plugin configuration
 - `quartz.ts`: local layout/component entry point
 - `content/`: Markdown and other authored content
+- `.github/workflows/deploy-pages.yaml`: `main` to GitHub Pages deployment
+- `docs/deployment.md`: owner handoff, DNS cutover, and launch verification
 - `public/`: generated build output; ignored by Git
 
 ## Verification
