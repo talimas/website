@@ -1,20 +1,24 @@
 @use "./variables.scss" as *;
 
-// Talita's Town — a rose garden / Art Nouveau treatment over Quartz's defaults.
+// Talita's Town — an Art Nouveau garden over Quartz's defaults.
 
 :root {
   --nouveau-cream: #fff7fa;
-  --nouveau-rose: #b62f6e;
-  --nouveau-petal: #f8d8e5;
-  --nouveau-ink: #3f1830;
-  --nouveau-vine: #82546b;
+  --nouveau-rose: #8c3d4f;
+  --nouveau-petal: #edd8c2;
+  --nouveau-ink: #34251d;
+  --nouveau-vine: #4f7962;
 }
 
 body {
   background:
-    radial-gradient(circle at 8% 12%, rgba(246, 185, 209, 0.36), transparent 24rem),
-    radial-gradient(circle at 92% 8%, rgba(227, 113, 160, 0.18), transparent 22rem),
+    radial-gradient(ellipse at 8% 12%, rgba(237, 216, 194, 0.64), transparent 26rem),
+    radial-gradient(ellipse at 92% 8%, rgba(128, 164, 121, 0.18), transparent 24rem),
     var(--light);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--tertiary) 35%, transparent);
 }
 
 a {
@@ -33,12 +37,27 @@ h3,
 .page-title,
 .article-title {
   color: var(--secondary);
-  font-weight: 600;
-  letter-spacing: 0.015em;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 2.3em;
+
+  &::after {
+    width: 2.8rem;
+    height: 1px;
+    background: var(--tertiary);
+    content: "";
+    opacity: 0.75;
+  }
 }
 
 .article-title {
-  font-size: clamp(2.9rem, 8vw, 5.4rem);
+  font-size: clamp(3.15rem, 8vw, 5.7rem);
   font-weight: 500;
   line-height: 0.9;
   text-wrap: balance;
@@ -47,7 +66,7 @@ h3,
     display: block;
     margin-top: 0.42rem;
     color: var(--tertiary);
-    content: "✦";
+    content: "❦";
     font-family: var(--bodyFont);
     font-size: 0.26em;
   }
@@ -58,6 +77,19 @@ h3,
   letter-spacing: 0.03em;
 }
 
+.page-title a::before,
+.page-title a::after {
+  color: var(--tertiary);
+  content: "❧";
+  font-size: 0.66em;
+  font-style: normal;
+  vertical-align: middle;
+}
+
+.page-title a::after {
+  content: "❦";
+}
+
 .center,
 .left.sidebar,
 .right.sidebar {
@@ -65,8 +97,8 @@ h3,
 }
 
 .center article {
-  font-size: 1.06rem;
-  line-height: 1.8;
+  font-size: 1.13rem;
+  line-height: 1.73;
 }
 
 .markdown-preview-view hr {
@@ -93,7 +125,9 @@ textarea:focus {
 
 blockquote {
   border-color: var(--tertiary);
-  background: color-mix(in srgb, var(--lightgray) 38%, transparent);
+  border-radius: 0 1.35rem 1.35rem 0;
+  background: color-mix(in srgb, var(--lightgray) 52%, transparent);
+  font-style: italic;
 }
 
 code {
@@ -118,9 +152,66 @@ body[data-slug="index"] article {
   }
 }
 
+.tag-link {
+  border: 1px solid color-mix(in srgb, var(--tertiary) 46%, transparent);
+  border-radius: 999px;
+  color: var(--tertiary) !important;
+  font-family: var(--headerFont);
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+  padding: 0.14rem 0.52rem;
+  text-decoration: none;
+
+  &:hover {
+    background: color-mix(in srgb, var(--tertiary) 13%, transparent);
+  }
+}
+
+.page-listing li {
+  border-bottom: 1px solid color-mix(in srgb, var(--gray) 42%, transparent);
+  padding: 0.72rem 0;
+}
+
+.left.sidebar {
+  .page-title {
+    margin-bottom: 1.65rem;
+    text-align: center;
+  }
+
+  .explorer {
+    border-top: 1px solid color-mix(in srgb, var(--tertiary) 40%, transparent);
+    padding-top: 1rem;
+  }
+}
+
+.quartztoc {
+  margin-top: 1.65rem;
+  padding: 0.65rem 0;
+
+  .quartztoc-track::before {
+    background: color-mix(in srgb, var(--tertiary) 48%, var(--lightgray));
+  }
+
+  .toc-dot {
+    background: var(--tertiary);
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+  }
+
+  .toc-row.is-active .toc-dot {
+    background: var(--secondary);
+    transform: rotate(-45deg) scale(1.35);
+  }
+
+  .toc-row-title .toc-text {
+    color: var(--secondary);
+    font-style: italic;
+  }
+}
+
 :root[saved-theme="dark"] body {
   background:
-    radial-gradient(circle at 8% 12%, rgba(170, 56, 112, 0.28), transparent 24rem),
-    radial-gradient(circle at 92% 8%, rgba(243, 154, 192, 0.12), transparent 22rem),
+    radial-gradient(ellipse at 8% 12%, rgba(140, 61, 79, 0.25), transparent 26rem),
+    radial-gradient(ellipse at 92% 8%, rgba(116, 157, 111, 0.18), transparent 24rem),
     var(--light);
 }

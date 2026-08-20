@@ -16,31 +16,31 @@ configuration:
     fontOrigin: googleFonts
     cdnCaching: true
     typography:
-      title: Cormorant Garamond
-      header: Cormorant Garamond
-      body: Lora
+      title: "Playfair Display"
+      header: "Playfair Display"
+      body: "Cormorant Garamond"
       code: DM Mono
     colors:
       lightMode:
         light: "#fff7fa"
-        lightgray: "#f2dce6"
-        gray: "#d7aabf"
-        darkgray: "#82546b"
-        dark: "#3f1830"
-        secondary: "#b62f6e"
-        tertiary: "#de78a2"
-        highlight: rgba(236, 139, 181, 0.18)
-        textHighlight: "#ffd8e788"
+        lightgray: "#f0e4d4"
+        gray: "#c6a987"
+        darkgray: "#6d5948"
+        dark: "#34251d"
+        secondary: "#8c3d4f"
+        tertiary: "#4f7962"
+        highlight: rgba(140, 61, 79, 0.13)
+        textHighlight: "#e8c7a688"
       darkMode:
-        light: "#281523"
-        lightgray: "#4c2940"
-        gray: "#87516d"
-        darkgray: "#f0c7d8"
-        dark: "#fff4f8"
-        secondary: "#f39ac0"
-        tertiary: "#d970a0"
-        highlight: rgba(239, 130, 178, 0.22)
-        textHighlight: "#ff9bc780"
+        light: "#201d18"
+        lightgray: "#39372e"
+        gray: "#81745f"
+        darkgray: "#e4d5bd"
+        dark: "#fff8ea"
+        secondary: "#e5a0a0"
+        tertiary: "#9fc59f"
+        highlight: rgba(229, 160, 160, 0.18)
+        textHighlight: "#9fc59f66"
 plugins:
   - source: "@quartz-community/created-modified-date"
     enabled: true
@@ -70,10 +70,15 @@ plugins:
     order: 40
   - source: "@quartz-community/table-of-contents"
     enabled: true
+    options:
+      maxDepth: 6
     order: 50
+  - source: ./plugins/talita-quartz-toc
+    enabled: true
+    order: 55
     layout:
-      position: right
-      priority: 30
+      position: left
+      priority: 20
   - source: "@quartz-community/crawl-links"
     enabled: true
     options:
@@ -182,7 +187,7 @@ plugins:
       position: beforeBody
       priority: 20
   - source: "@quartz-community/tag-list"
-    enabled: false
+    enabled: true
     layout:
       position: beforeBody
       priority: 30

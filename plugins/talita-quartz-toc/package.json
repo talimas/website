@@ -1,0 +1,27 @@
+{
+  "name": "@talita/quartz-toc",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./components": "./components.js"
+  },
+  "peerDependencies": { "preact": "^10.28.2" },
+  "quartz": {
+    "name": "talita-quartz-toc",
+    "displayName": "Talita reading rail",
+    "description": "A proportional, LessWrong-style article rail.",
+    "version": "1.0.0",
+    "quartzVersion": ">=5.0.0",
+    "category": "component",
+    "defaultOrder": 55,
+    "components": {
+      "TalitaTOC": {
+        "displayName": "Talita reading rail",
+        "defaultPosition": "left",
+        "defaultPriority": 20
+      }
+    }
+  }
+}

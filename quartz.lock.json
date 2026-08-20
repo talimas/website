@@ -1,0 +1,11 @@
+{
+  "version": "1.0.0",
+  "plugins": {
+    "talita-quartz-toc": {
+      "source": "./plugins/talita-quartz-toc",
+      "resolved": "/Users/gassandrid/Lab/cognition/experiments/talita-town/plugins/talita-quartz-toc",
+      "commit": "local",
+      "installedAt": "2026-08-20T21:54:34.741Z"
+    }
+  }
+}
