@@ -22,6 +22,8 @@ npm run dev
 ```
 
 Press Control-C to stop the preview. To check a production build, run `npm run build`.
+The preview uses `.quartz/preview`; production builds use `public/`, so you
+can keep the preview running while publishing.
 
 Node 22 is installed for this Mac in `~/.local/share/talita-town`, with commands
 in `~/.local/bin`. On another computer, install Node 22, run `npm ci`, then

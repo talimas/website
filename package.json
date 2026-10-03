@@ -14,7 +14,7 @@
   "scripts": {
     "quartz": "./quartz/bootstrap-cli.mjs",
     "predev": "npm run install-plugins",
-    "dev": "node ./quartz/bootstrap-cli.mjs build --serve",
+    "dev": "node ./quartz/bootstrap-cli.mjs build --serve --output .quartz/preview",
     "build": "node ./quartz/bootstrap-cli.mjs build",
     "docs": "npx quartz build --serve -d docs",
     "check": "tsc --noEmit && npx prettier . --check",
