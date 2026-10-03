@@ -5,6 +5,8 @@ tags:
   - town
 ---
 
+hi
+
 Welcome. This is a little town for things worth lingering with: a garden of notes, a shelf of fragments, and rooms that are still becoming themselves.
 
 ---
