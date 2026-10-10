@@ -1,217 +1,1081 @@
 @use "./variables.scss" as *;
 
-// Talita's Town — an Art Nouveau garden over Quartz's defaults.
+// Talita's Town — the site as a town plan. A low arch holds the main street
+// (see plugins/town-masthead); below it every part of the page gets its own
+// plot, divided by dotted rules. Colour is "Will-o'-the-Wisp": periwinkle
+// paper, indigo ink, lime for anything lit, copper as a warm fill.
 
 :root {
-  --nouveau-cream: #fff7fa;
-  --nouveau-rose: #8c3d4f;
-  --nouveau-petal: #edd8c2;
-  --nouveau-ink: #34251d;
-  --nouveau-vine: #4f7962;
+  color-scheme: light;
+
+  --card: #e0e3fd; // the paved plot the note sits on
+  --town-ink: #1e2152;
+  --town-light: #c8f169; // lit windows, the moon
+  --town-warm: #e0915a; // fills only, always with ink text on top
+  --pop-1: #0e6a60;
+  --pop-2: #6a3fc0;
+  --pop-3: #a82672;
+
+  --rule: 1px dotted var(--dark);
+  // Named here in quotes: the fonts plugin emits `Jacquard 24` unquoted, which browsers reject.
+  --town-display: "Jacquard 24", Georgia, serif;
+  --pixel: "Silkscreen", ui-monospace, monospace;
+}
+
+@mixin label {
+  color: var(--dark);
+  font-family: var(--bodyFont);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+@mixin pixel($size: 10px) {
+  font-family: var(--pixel);
+  font-size: $size;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+
+html {
+  background: var(--light);
 }
 
 body {
-  background:
-    radial-gradient(ellipse at 8% 12%, rgba(237, 216, 194, 0.64), transparent 26rem),
-    radial-gradient(ellipse at 92% 8%, rgba(128, 164, 121, 0.18), transparent 24rem),
-    var(--light);
+  margin: 0;
+  background: var(--light);
+  color: var(--darkgray);
+  font-family: var(--bodyFont);
+  font-size: 15.5px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--tertiary) 35%, transparent);
+  background: var(--town-light);
+  color: var(--town-ink);
 }
 
-a {
-  text-decoration-color: color-mix(in srgb, var(--secondary) 45%, transparent);
-  text-underline-offset: 0.18em;
+:focus-visible {
+  outline: 2px solid var(--secondary);
+  outline-offset: 2px;
+}
 
-  &:hover {
-    color: var(--tertiary);
-    text-decoration-thickness: 2px;
+// ── The plan ────────────────────────────────────────────────────────────────
+
+.page {
+  box-sizing: border-box;
+  max-width: 1064px;
+  padding: 26px 12px 44px;
+
+  @media all and ($mobile) {
+    padding: 14px 8px 30px;
   }
 }
+
+.page > #quartz-body {
+  grid-template-columns: 225px minmax(0, 1fr) 235px;
+  grid-template-rows: auto;
+  grid-template-areas:
+    "mast mast mast"
+    "left center right"
+    "foot foot foot";
+  gap: 0;
+  padding: 0;
+
+  .town-masthead {
+    grid-area: mast;
+  }
+
+  .sidebar.left,
+  .sidebar.right {
+    position: static;
+    box-sizing: border-box;
+    width: auto;
+    margin: 0;
+    height: auto;
+    gap: 0;
+    padding: 0;
+    flex-direction: column;
+    align-items: stretch;
+    color: var(--dark);
+    font-size: 15px;
+    line-height: 1.45;
+
+    // every component in a side column is its own plot
+    > *,
+    > .toc {
+      display: block;
+      flex: none;
+      max-height: none;
+      min-width: 0;
+      border-bottom: var(--rule);
+    }
+  }
+
+  .sidebar.left {
+    grid-area: left;
+  }
+
+  .sidebar.right {
+    grid-area: right;
+  }
+
+  .center {
+    grid-area: center;
+    box-sizing: border-box;
+    min-width: 0;
+    margin: 0;
+    border-right: var(--rule);
+    border-left: var(--rule);
+    background: var(--card);
+    padding: 14px 18px 18px;
+
+    > hr {
+      display: none;
+    }
+  }
+
+  .page-header,
+  .page-footer {
+    margin: 0;
+  }
+
+  footer {
+    grid-area: foot;
+    min-width: 0;
+  }
+
+  // phones: one column — directory and contents first, then the note, then the rest
+  @media all and ($mobile) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: none;
+
+    .town-masthead,
+    .center,
+    .sidebar.left,
+    .sidebar.right,
+    footer {
+      grid-area: auto;
+    }
+
+    .sidebar.left,
+    .sidebar.right {
+      display: contents;
+    }
+
+    .town-masthead {
+      order: 0;
+    }
+
+    .sidebar > .explorer {
+      order: 1;
+      overflow: visible;
+    }
+
+    .sidebar > .toc {
+      order: 2;
+    }
+
+    .center {
+      order: 3;
+      border-right: 0;
+      border-left: 0;
+      padding: 16px 14px 20px;
+    }
+
+    .sidebar > * {
+      order: 4;
+    }
+
+    .sidebar > .town-crier {
+      order: 5;
+    }
+
+    .sidebar > .town-census {
+      order: 6;
+    }
+
+    .sidebar > .flex-component {
+      order: 7;
+    }
+
+    footer {
+      order: 9;
+    }
+  }
+}
+
+// ── Plot headings ───────────────────────────────────────────────────────────
+
+.graph > h3,
+.backlinks > h3,
+.town-plot > h4,
+button.toc-header,
+.explorer button.title-button {
+  display: flex;
+  box-sizing: border-box;
+  align-items: center;
+  width: 100%;
+  margin: 0;
+  border: 0;
+  border-bottom: var(--rule);
+  border-radius: 0;
+  background: none;
+  padding: 7px 12px 6px;
+  text-align: left;
+
+  &::before {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    margin-right: 8px;
+    background: var(--town-warm);
+    content: "";
+  }
+}
+
+.town-plot > h4,
+button.toc-header h3,
+.explorer button.title-button h2 {
+  @include label;
+  margin: 0;
+}
+
+// Quartz's own headings, renamed in keeping with the town
+.graph > h3,
+.backlinks > h3 {
+  font-size: 0;
+
+  &::after {
+    @include label;
+  }
+}
+
+.graph > h3::after {
+  content: "The map";
+}
+
+.backlinks > h3::after {
+  content: "Roads leading here";
+}
+
+button.toc-header h3 {
+  font-size: 0;
+
+  &::after {
+    @include label;
+    content: "On this page";
+  }
+}
+
+button.toc-header,
+.explorer button.title-button {
+  cursor: pointer;
+
+  svg {
+    margin-left: auto;
+    color: var(--dark);
+    opacity: 0.65;
+  }
+}
+
+// ── Side columns ────────────────────────────────────────────────────────────
+
+.sidebar {
+  a,
+  a.internal {
+    border-radius: 0;
+    background: none;
+    padding: 0;
+    color: var(--dark);
+    font-weight: 400;
+    line-height: inherit;
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--dark) 35%, transparent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    opacity: 1;
+
+    &:hover {
+      color: var(--tertiary);
+      text-decoration-color: currentColor;
+    }
+  }
+}
+
+// street directory
+.sidebar .explorer {
+  .explorer-content {
+    padding: 8px 12px 12px;
+    font-family: var(--bodyFont);
+    font-size: 15px;
+
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    // the whole list is shown, so Quartz's scroll-fade on the last rows is not wanted
+    ul.overflow {
+      max-height: none;
+      overflow: visible;
+      -webkit-mask-image: none;
+      mask-image: none;
+
+      &::after {
+        display: none;
+      }
+    }
+
+    li {
+      padding: 3px 0;
+    }
+
+    ul ul,
+    .folder-outer > ul {
+      margin: 2px 0 4px 3px;
+      border-left: var(--rule);
+      padding-left: 12px;
+    }
+
+    .folder-container {
+      color: var(--dark);
+
+      svg {
+        color: var(--dark);
+        opacity: 0.65;
+      }
+    }
+
+    .folder-title,
+    .folder-button span,
+    a.folder-title {
+      color: var(--dark);
+      font-family: var(--bodyFont);
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    a.active {
+      background: var(--town-warm);
+      padding: 1px 6px;
+      color: var(--town-ink);
+      font-weight: 600;
+      text-decoration: none;
+    }
+  }
+}
+
+// on this page
+.sidebar .toc {
+  ul.toc-content,
+  .toc-content {
+    margin: 0;
+    padding: 8px 12px 12px;
+    list-style: none;
+    counter-reset: n;
+    font-size: 15px;
+
+    li {
+      display: flex;
+      gap: 8px;
+      padding: 3px 0;
+      counter-increment: n;
+
+      &::before {
+        flex: none;
+        width: 16px;
+        content: counter(n) ".";
+        font-variant-numeric: tabular-nums;
+        opacity: 0.65;
+      }
+
+      &:not(.depth-0)::before {
+        content: "";
+      }
+    }
+
+    a {
+      color: var(--dark);
+      text-decoration: none;
+      opacity: 1;
+
+      &.in-view {
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+// the map
+.graph {
+  > .graph-outer {
+    height: 250px;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+
+    > .global-graph-icon {
+      border-radius: 0;
+      color: var(--dark);
+
+      &:hover {
+        background: var(--highlight);
+      }
+    }
+  }
+
+  > .global-graph-outer > .global-graph-container {
+    border: 1px solid var(--dark);
+    border-radius: 0;
+    background: var(--card);
+  }
+}
+
+// roads leading here
+.backlinks > ul.overflow::after {
+  display: none;
+}
+
+.backlinks > ul.overflow {
+  max-height: none;
+  margin: 0;
+  padding: 8px 12px 12px;
+  list-style: none;
+  font-size: 15px;
+
+  > li {
+    display: flex;
+    gap: 7px;
+    padding: 3px 0;
+
+    &:not(.overflow-end)::before {
+      flex: none;
+      content: "←";
+      opacity: 0.65;
+    }
+  }
+}
+
+// plots from plugins/town-crier and plugins/town-census
+.town-plot .in {
+  padding: 10px 12px 14px;
+}
+
+.town-crier {
+  .status {
+    margin: 0 0 10px;
+    background: var(--town-warm);
+    padding: 6px 10px;
+    color: var(--town-ink);
+    font-weight: 600;
+  }
+
+  dl {
+    margin: 0;
+  }
+
+  dt {
+    margin-top: 7px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1.4;
+    text-transform: uppercase;
+    opacity: 0.7;
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  dd {
+    margin: 0;
+  }
+}
+
+.town-census .in {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3px 12px;
+
+  span {
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  a {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  i {
+    font-style: normal;
+    font-variant-numeric: tabular-nums;
+    opacity: 0.65;
+  }
+}
+
+// search and reader mode share a plot
+.page > #quartz-body .sidebar > .flex-component {
+  display: flex;
+  box-sizing: border-box;
+  align-items: center;
+  padding: 10px 12px;
+}
+
+.search {
+  max-width: none;
+
+  > .search-button {
+    height: 2.1rem;
+    border: 1px solid var(--dark);
+    border-radius: 0;
+    background: none;
+    font-family: var(--bodyFont);
+    font-size: 14px;
+
+    &:hover {
+      background: var(--highlight);
+    }
+
+    > p {
+      color: var(--dark);
+    }
+
+    svg {
+      margin: 0 0.5rem 0 0.6rem;
+      color: var(--dark);
+    }
+  }
+
+  > .search-container > .search-space {
+    > * {
+      border: 1px solid var(--dark);
+      border-radius: 0;
+      background: var(--card);
+      box-shadow: none;
+    }
+
+    > input {
+      margin-bottom: 0.75rem;
+      padding: 0.7rem 1rem;
+      font-family: var(--bodyFont);
+      font-size: 15px;
+    }
+  }
+}
+
+.readermode {
+  display: block; // no baseline gap, so it lines up with the search box
+  position: relative;
+  flex: none;
+  box-sizing: border-box;
+  width: 2.1rem;
+  height: 2.1rem;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--dark);
+  border-radius: 0;
+  background: none;
+  color: var(--dark);
+
+  &:hover {
+    background: var(--highlight);
+  }
+
+  // Quartz positions this icon absolutely for its own 20px button; centre it in ours
+  svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    transform: translate(-50%, -50%);
+  }
+}
+
+// phones: the street directory opens Quartz's slide-in list from one labelled row,
+// and the two town plots fold down to their heading (tap to open)
+@media all and ($mobile) {
+  // Quartz normally turns the explorer into a full-screen slide-in list on phones.
+  // Here it stays an ordinary plot in the page that folds from its heading instead:
+  // nothing covers the screen, whichever width the page was loaded at.
+  .page > #quartz-body .sidebar > .explorer {
+    flex: none;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+
+    button.mobile-explorer {
+      display: none;
+    }
+
+    button.title-button.desktop-explorer {
+      display: flex;
+      padding: 13px 12px;
+    }
+
+    > .explorer-content {
+      position: static;
+      z-index: auto;
+      width: auto;
+      max-width: none;
+      height: auto;
+      max-height: none;
+      margin: 0;
+      background: none;
+      padding: 8px 12px 12px;
+      overflow: visible;
+      transform: none !important;
+      transition: none;
+      visibility: visible !important;
+    }
+
+    // folded until its heading is tapped (the class is toggled by plugins/town-masthead)
+    &:not(.town-open) > .explorer-content {
+      display: none;
+    }
+
+    &:not(.town-open) > button.title-button {
+      border-bottom: 0;
+    }
+
+    > button.title-button svg {
+      transform: rotate(-90deg);
+    }
+
+    &.town-open > button.title-button svg {
+      transform: none;
+    }
+  }
+
+  // the page must never be slid aside for a menu
+  .page > #quartz-body.lock-scroll > * {
+    transform: none !important;
+  }
+
+  .sidebar .town-plot > h4 {
+    padding: 13px 12px;
+    cursor: pointer;
+
+    &::after {
+      margin-left: auto;
+      content: "+";
+      font: 400 20px/0.6 var(--bodyFont);
+      letter-spacing: 0;
+    }
+  }
+
+  .sidebar .town-plot.town-open > h4::after {
+    content: "–";
+  }
+
+  .sidebar .town-plot:not(.town-open) > h4 {
+    border-bottom: 0;
+  }
+
+  .sidebar .town-plot:not(.town-open) > :not(h4) {
+    display: none;
+  }
+
+  .sidebar .toc .toc-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 16px;
+  }
+}
+
+// ── The note ────────────────────────────────────────────────────────────────
 
 h1,
 h2,
 h3,
-.page-title,
-.article-title {
-  color: var(--secondary);
-  font-weight: 500;
-  letter-spacing: 0.01em;
-}
-
-h2 {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  margin-top: 2.3em;
-
-  &::after {
-    width: 2.8rem;
-    height: 1px;
-    background: var(--tertiary);
-    content: "";
-    opacity: 0.75;
-  }
+h4,
+h5,
+h6 {
+  color: var(--dark);
+  font-family: var(--town-display);
+  font-weight: 400;
 }
 
 .article-title {
-  font-size: clamp(3.15rem, 8vw, 5.7rem);
-  font-weight: 500;
-  line-height: 0.9;
-  text-wrap: balance;
+  margin: 4px 0 0;
+  font-size: 52px;
+  line-height: 1;
 
   &::after {
     display: block;
-    margin-top: 0.42rem;
-    color: var(--tertiary);
-    content: "❦";
-    font-family: var(--bodyFont);
-    font-size: 0.26em;
+    width: 64px;
+    height: 5px;
+    margin-top: 10px;
+    background: var(--town-warm);
+    content: "";
+  }
+
+  @media all and ($mobile) {
+    font-size: 42px;
   }
 }
 
-.page-title a {
-  font-style: italic;
-  letter-spacing: 0.03em;
+// "you are at ⊹ the workshop ❯ moth lamp"
+.breadcrumb-container {
+  @include pixel;
+  flex-wrap: wrap;
+  gap: 0 6px;
+  margin: 10px 0 0;
+  color: var(--dark);
+
+  &::before {
+    content: "you are at ⊹";
+  }
+
+  .breadcrumb-element {
+    gap: 6px;
+
+    p {
+      margin: 0;
+      color: var(--dark);
+      font-size: inherit;
+    }
+
+    a {
+      background: none;
+      padding: 0;
+      color: var(--dark);
+      font-weight: 400;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+  }
 }
 
-.page-title a::before,
-.page-title a::after {
-  color: var(--tertiary);
-  content: "❧";
-  font-size: 0.66em;
-  font-style: normal;
-  vertical-align: middle;
-}
-
-.page-title a::after {
-  content: "❦";
-}
-
-.center,
-.left.sidebar,
-.right.sidebar {
-  border-color: color-mix(in srgb, var(--gray) 55%, transparent);
-}
-
-.center article {
-  font-size: 1.13rem;
-  line-height: 1.73;
-}
-
-.markdown-preview-view hr {
-  width: min(17rem, 72%);
-  height: 4.5rem;
-  margin: 2.3rem auto;
-  border: 0;
-  background: url("/static/ornamental-divider.svg") center / contain no-repeat;
-  filter: invert(29%) sepia(28%) saturate(2104%) hue-rotate(286deg) brightness(88%) contrast(91%);
-  opacity: 0.78;
-}
-
-button,
-input,
-textarea {
-  border-color: color-mix(in srgb, var(--gray) 75%, transparent);
-}
-
-button:hover,
-input:focus,
-textarea:focus {
-  border-color: var(--tertiary);
-}
-
-blockquote {
-  border-color: var(--tertiary);
-  border-radius: 0 1.35rem 1.35rem 0;
-  background: color-mix(in srgb, var(--lightgray) 52%, transparent);
-  font-style: italic;
-}
-
-code {
-  color: var(--secondary);
+.content-meta {
+  @include pixel;
+  margin: 4px 0 0;
+  color: var(--gray);
 }
 
 body[data-slug="index"] .content-meta {
   display: none;
 }
 
-body[data-slug="index"] .page-header,
-body[data-slug="index"] article {
-  text-align: center;
+.tags {
+  gap: 6px;
+  margin: 12px 0 0;
 }
 
-body[data-slug="index"] article {
-  margin-top: 2.5rem;
+a.internal.tag-link {
+  margin: 0;
+  border-radius: 999px;
+  background: var(--highlight);
+  padding: 2px 11px;
+  color: var(--secondary);
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1.5;
 
-  p:first-of-type {
-    color: var(--darkgray);
-    font-size: clamp(1.18rem, 2.4vw, 1.5rem);
+  &:hover {
+    color: var(--tertiary);
   }
 }
 
-.tag-link {
-  border: 1px solid color-mix(in srgb, var(--tertiary) 46%, transparent);
-  border-radius: 999px;
-  color: var(--tertiary) !important;
-  font-family: var(--headerFont);
-  font-size: 0.82rem;
-  letter-spacing: 0.02em;
-  padding: 0.14rem 0.52rem;
+// each tag gets its own little light, by position in the list
+.tags li:nth-child(3n + 2) a.tag-link {
+  background: color-mix(in srgb, var(--town-warm) 55%, transparent);
+  color: var(--dark);
+}
+
+.tags li:nth-child(3n) a.tag-link {
+  background: color-mix(in srgb, var(--pop-2) 18%, transparent);
+  color: var(--pop-2);
+}
+
+.note-properties {
+  border: 0;
+  border-radius: 0;
+}
+
+article {
+  margin-top: 14px;
+  border-top: var(--rule);
+  padding-top: 14px;
+
+  p {
+    margin: 0 0 14px;
+  }
+
+  h2,
+  h3 {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin: 26px 0 10px;
+    line-height: 1.1;
+
+    &::before {
+      flex: none;
+      align-self: center;
+      width: 10px;
+      height: 10px;
+      background: var(--town-warm);
+      content: "";
+    }
+
+    &::after {
+      flex: 1;
+      order: 9;
+      border-bottom: var(--rule);
+      content: "";
+    }
+
+    a[role="anchor"] {
+      background: none;
+      padding: 0;
+    }
+  }
+
+  h2 {
+    font-size: 32px;
+  }
+
+  h3 {
+    font-size: 25px;
+
+    &::before {
+      width: 7px;
+      height: 7px;
+    }
+  }
+
+  h4,
+  h5,
+  h6 {
+    @include label;
+    margin: 20px 0 8px;
+  }
+}
+
+a {
+  color: var(--secondary);
+  font-weight: 500;
   text-decoration: none;
 
   &:hover {
-    background: color-mix(in srgb, var(--tertiary) 13%, transparent);
+    color: var(--tertiary);
+  }
+
+  &.internal {
+    border-radius: 5px;
+    background: var(--highlight);
+    padding: 0 0.15rem;
+    line-height: inherit;
   }
 }
 
-.page-listing li {
-  border-bottom: 1px solid color-mix(in srgb, var(--gray) 42%, transparent);
-  padding: 0.72rem 0;
+.text-highlight {
+  border-radius: 4px;
+  background: var(--textHighlight);
+  padding: 0 0.15rem;
 }
 
-.left.sidebar {
-  .page-title {
-    margin-bottom: 1.65rem;
-    text-align: center;
-  }
-
-  .explorer {
-    border-top: 1px solid color-mix(in srgb, var(--tertiary) 40%, transparent);
-    padding-top: 1rem;
-  }
+code {
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--lightgray) 60%, transparent);
+  padding: 1px 6px;
+  color: var(--dark);
+  font-size: 13px;
 }
 
-.quartztoc {
-  margin-top: 1.65rem;
-  padding: 0.65rem 0;
+pre,
+figure[data-rehype-pretty-code-figure] pre {
+  border: 1px solid var(--lightgray);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--light) 60%, var(--card));
 
-  .quartztoc-track::before {
-    background: color-mix(in srgb, var(--tertiary) 48%, var(--lightgray));
-  }
+  code {
+    background: none;
+    padding: 0;
 
-  .toc-dot {
-    background: var(--tertiary);
-    border-radius: 50% 50% 50% 0;
-    transform: rotate(-45deg);
-  }
-
-  .toc-row.is-active .toc-dot {
-    background: var(--secondary);
-    transform: rotate(-45deg) scale(1.35);
-  }
-
-  .toc-row-title .toc-text {
-    color: var(--secondary);
-    font-style: italic;
+    [data-highlighted-line] {
+      border-left: 3px solid var(--secondary);
+      background: var(--highlight);
+    }
   }
 }
 
-:root[saved-theme="dark"] body {
-  background:
-    radial-gradient(ellipse at 8% 12%, rgba(140, 61, 79, 0.25), transparent 26rem),
-    radial-gradient(ellipse at 92% 8%, rgba(116, 157, 111, 0.18), transparent 24rem),
-    var(--light);
+blockquote {
+  margin: 0 0 14px;
+  border-left: 3px solid var(--pop-3);
+  padding: 2px 0 2px 18px;
+  color: var(--dark);
+  font-size: 19px;
+  font-style: italic;
+  line-height: 1.45;
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+.callout {
+  border-radius: 16px 16px 16px 4px;
+
+  &[data-callout="note"] {
+    --color: var(--secondary);
+    --border: color-mix(in srgb, var(--secondary) 35%, transparent);
+    --bg: color-mix(in srgb, var(--secondary) 10%, transparent);
+  }
+
+  &[data-callout="tip"] {
+    --color: var(--pop-1);
+    --border: color-mix(in srgb, var(--pop-1) 35%, transparent);
+    --bg: color-mix(in srgb, var(--pop-1) 10%, transparent);
+  }
+}
+
+.markdown-preview-view hr,
+article hr {
+  height: 0;
+  margin: 22px 0;
+  border: 0;
+  border-top: var(--rule);
+  background: none;
+}
+
+table {
+  font-size: 14px;
+}
+
+th {
+  border-bottom: 1px solid var(--gray);
+  color: var(--gray);
+  font-family: var(--bodyFont);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+td {
+  border-bottom: 1px solid var(--lightgray);
+}
+
+tbody tr:nth-child(odd) {
+  background: transparent;
+}
+
+input[type="checkbox"] {
+  accent-color: var(--secondary);
+}
+
+// ── Lists of pages (folders, tags) ──────────────────────────────────────────
+
+.page-listing > p {
+  @include pixel;
+  color: var(--gray);
+}
+
+li.section-li {
+  margin: 0;
+  border-top: var(--rule);
+  padding: 9px 0;
+
+  &:first-child {
+    border-top: 0;
+  }
+
+  > .section {
+    align-items: baseline;
+
+    .meta {
+      @include pixel;
+      color: var(--gray);
+      opacity: 1;
+    }
+
+    > .desc > h3 {
+      display: block;
+      margin: 0;
+
+      &::before,
+      &::after {
+        content: none;
+      }
+
+      > a {
+        background: none;
+        padding: 0;
+        color: var(--dark);
+        font-family: var(--bodyFont);
+        font-size: 15.5px;
+        font-weight: 500;
+
+        &:hover {
+          color: var(--tertiary);
+        }
+      }
+    }
+  }
+}
+
+// ── Overlays ────────────────────────────────────────────────────────────────
+
+.popover > .popover-inner {
+  border: 1px solid var(--dark);
+  border-radius: 0;
+  background: var(--card);
+  box-shadow: 6px 6px 0 color-mix(in srgb, var(--dark) 25%, transparent);
+}
+
+// ── Edge of town ────────────────────────────────────────────────────────────
+
+footer {
+  @include pixel;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 10px 2px 0;
+  color: var(--dark);
+  text-align: center;
+  opacity: 1;
+
+  &::before {
+    display: block;
+    content: "you have reached the edge of town";
+  }
+
+  p {
+    margin: 0;
+    color: var(--dark);
+  }
+
+  a {
+    color: var(--dark);
+    font-weight: 400;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
 }

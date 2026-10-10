@@ -1,0 +1,29 @@
+{
+  "name": "@talita/town-masthead",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./components": "./components.js"
+  },
+  "peerDependencies": {
+    "preact": "^10.28.2"
+  },
+  "quartz": {
+    "name": "town-masthead",
+    "displayName": "Town masthead",
+    "description": "The arch, the main street of buildings and the section nameplates.",
+    "version": "1.0.0",
+    "quartzVersion": ">=5.0.0",
+    "category": "component",
+    "defaultOrder": 56,
+    "components": {
+      "TownMasthead": {
+        "displayName": "Town masthead",
+        "defaultPosition": "footer",
+        "defaultPriority": 10
+      }
+    }
+  }
+}

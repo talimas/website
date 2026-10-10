@@ -1,0 +1,29 @@
+{
+  "name": "@talita/town-crier",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./components": "./components.js"
+  },
+  "peerDependencies": {
+    "preact": "^10.28.2"
+  },
+  "quartz": {
+    "name": "town-crier",
+    "displayName": "Town crier",
+    "description": "A small 'now' block: a status line and a few labelled entries.",
+    "version": "1.0.0",
+    "quartzVersion": ">=5.0.0",
+    "category": "component",
+    "defaultOrder": 56,
+    "components": {
+      "TownCrier": {
+        "displayName": "Town crier",
+        "defaultPosition": "right",
+        "defaultPriority": 40
+      }
+    }
+  }
+}

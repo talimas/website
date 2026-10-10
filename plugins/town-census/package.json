@@ -1,0 +1,29 @@
+{
+  "name": "@talita/town-census",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./components": "./components.js"
+  },
+  "peerDependencies": {
+    "preact": "^10.28.2"
+  },
+  "quartz": {
+    "name": "town-census",
+    "displayName": "Town census",
+    "description": "Tags with the number of notes that carry them.",
+    "version": "1.0.0",
+    "quartzVersion": ">=5.0.0",
+    "category": "component",
+    "defaultOrder": 56,
+    "components": {
+      "TownCensus": {
+        "displayName": "Town census",
+        "defaultPosition": "left",
+        "defaultPriority": 60
+      }
+    }
+  }
+}

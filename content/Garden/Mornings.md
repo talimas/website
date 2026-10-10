@@ -1,14 +1,14 @@
 ---
 title: Mornings
-description: A short note about making a beginning.
+description: Sed mattis nisl sagittis vestibulum.
 tags:
   - town/garden
   - town/garden/rituals
 ---
 
-[[Garden|← Back to the garden]]
+[[Garden|← Vestibulum ante]]
 
-I like a morning with enough blank space to notice what I am thinking before the day fills it in for me.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, mauris orci aenean laoreet vestibulum nisi lectus commodo ac facilisis.
 
 ---
 
@@ -16,14 +16,14 @@ I like a morning with enough blank space to notice what I am thinking before the
 
 ### Light
 
-Open a window or a curtain. Let the room know it is no longer night.
+Integer lacinia sollicitudin massa. Cras metus sed aliquet risus a tortor.
 
 ### Water
 
-Make tea slowly enough to hear the kettle decide.
+Integer id quam morbi mi quisque nisl felis venenatis.
 
 ### A sentence
 
-Write one true sentence before reading anyone else’s.
+Tristique dignissim in ultrices sit amet augue.
 
-The companion note is [[Garden/Small Things|Small Things]].
+Proin sodales libero eget ante: [[Garden/Small Things|nulla quam]].

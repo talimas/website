@@ -1,18 +1,16 @@
 ---
 title: Talita's Town
-description: A small, growing place for lovely things.
+description: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 tags:
   - town
 ---
 
-hi
-
-Welcome. This is a little town for things worth lingering with: a garden of notes, a shelf of fragments, and rooms that are still becoming themselves.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua, ut enim ad minim veniam quis nostrud exercitation.
 
 ## Begin anywhere
 
-- [[Garden|The Garden]] — observations, rituals, and growing things.
-- [[Reading Room|The Reading Room]] — books, sentences, and small arguments.
-- [[About|About this town]] — a map, rather than a manifesto.
+- [[Garden|Vestibulum ante]] — ipsum primis in faucibus orci luctus.
+- [[Reading Room|Ultrices posuere]] — cubilia curae pellentesque habitant.
+- [[About|Morbi tristique]] — senectus et netus et malesuada fames.
 
-*A little place for lovely things.*
+*Integer nec odio praesent libero.*

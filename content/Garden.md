@@ -1,21 +1,21 @@
 ---
 title: The Garden
-description: Notes on cultivation, attention, and the weather inside a day.
+description: Sed dignissim lacinia nunc curabitur tortor.
 tags:
   - town/garden
 ---
 
-The garden is where a day becomes visible: a cup cooling on a sill, a new leaf, an idea that asks to be kept a little longer.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit: pellentesque nibh aenean quam, in scelerisque sem at dolor maecenas mattis.
 
 ---
 
 ## Paths
 
-- [[Garden/Mornings|Mornings]] — small practices for starting gently.
-- [[Garden/Small Things|Small Things]] — a catalogue of things that have lately pleased me.
+- [[Garden/Mornings|Sed convallis]] — tristique sem proin ut ligula vel nunc.
+- [[Garden/Small Things|Egestas porttitor]] — morbi lectus risus iaculis vel suscipit quis luctus.
 
 ## A rule of thumb
 
-Tend what is already alive before buying another seed packet.
+Non massa fusce ac turpis quis ligula lacinia aliquet.
 
-See also: [[Reading Room]] and [[About]].
+Mauris ipsum: [[Reading Room|nulla metus]] et [[About|ullamcorper vel]].

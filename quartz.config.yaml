@@ -16,31 +16,38 @@ configuration:
     fontOrigin: googleFonts
     cdnCaching: true
     typography:
-      title: "Playfair Display"
-      header: "Playfair Display"
-      body: "Cormorant Garamond"
-      code: DM Mono
+      title:
+        name: Silkscreen
+        weights: [400]
+      header:
+        name: Jacquard 24
+        weights: [400]
+      body:
+        name: Karla
+        weights: [400, 500, 600, 700]
+        includeItalic: true
+      code: Geist Mono
     colors:
       lightMode:
-        light: "#fff7fa"
-        lightgray: "#f0e4d4"
-        gray: "#c6a987"
-        darkgray: "#6d5948"
-        dark: "#34251d"
-        secondary: "#8c3d4f"
-        tertiary: "#4f7962"
-        highlight: rgba(140, 61, 79, 0.13)
-        textHighlight: "#e8c7a688"
+        light: "#B2B9F9"
+        lightgray: "#8E96E6"
+        gray: "#3E4280"
+        darkgray: "#1E2152"
+        dark: "#1E2152"
+        secondary: "#3A3DA8"
+        tertiary: "#A82672"
+        highlight: "#C8F169AA"
+        textHighlight: "#E0915A77"
       darkMode:
-        light: "#201d18"
-        lightgray: "#39372e"
-        gray: "#81745f"
-        darkgray: "#e4d5bd"
-        dark: "#fff8ea"
-        secondary: "#e5a0a0"
-        tertiary: "#9fc59f"
-        highlight: rgba(229, 160, 160, 0.18)
-        textHighlight: "#9fc59f66"
+        light: "#B2B9F9"
+        lightgray: "#8E96E6"
+        gray: "#3E4280"
+        darkgray: "#1E2152"
+        dark: "#1E2152"
+        secondary: "#3A3DA8"
+        tertiary: "#A82672"
+        highlight: "#C8F169AA"
+        textHighlight: "#E0915A77"
 plugins:
   - source: "@quartz-community/created-modified-date"
     enabled: true
@@ -73,8 +80,11 @@ plugins:
     options:
       maxDepth: 6
     order: 50
+    layout:
+      position: left
+      priority: 20
   - source: ./plugins/talita-quartz-toc
-    enabled: true
+    enabled: false
     order: 55
     layout:
       position: left
@@ -106,6 +116,21 @@ plugins:
     order: 92
   - source: "@quartz-community/quartz-fonts"
     enabled: true
+    options:
+      fontOrigin: googleFonts
+      title:
+        name: Silkscreen
+        weights: [400]
+      header:
+        name: Jacquard 24
+        weights: [400]
+      body:
+        name: Karla
+        weights: [400, 500, 600, 700]
+        includeItalic: true
+      code:
+        name: Geist Mono
+        weights: [400, 600]
   - source: "@quartz-themes/core"
     enabled: false
     options:
@@ -155,9 +180,11 @@ plugins:
     enabled: true
   - source: "@quartz-community/explorer"
     enabled: true
+    options:
+      title: Street directory
     layout:
-      position: right
-      priority: 50
+      position: left
+      priority: 10
   - source: "@quartz-community/graph"
     enabled: true
     layout:
@@ -166,7 +193,7 @@ plugins:
   - source: "@quartz-community/search"
     enabled: true
     layout:
-      position: right
+      position: left
       priority: 20
       group: toolbar
       groupOptions:
@@ -175,12 +202,12 @@ plugins:
     enabled: true
     layout:
       position: right
-      priority: 50
+      priority: 30
   - source: "@quartz-community/article-title"
     enabled: true
     layout:
       position: beforeBody
-      priority: 10
+      priority: 4
   - source: "@quartz-community/content-meta"
     enabled: true
     layout:
@@ -197,7 +224,7 @@ plugins:
       position: left
       priority: 10
   - source: "@quartz-community/darkmode"
-    enabled: true
+    enabled: false
     layout:
       position: left
       priority: 30
@@ -262,10 +289,41 @@ plugins:
       position: beforeBody
       priority: 15
       display: all
+  - source: ./plugins/town-masthead
+    enabled: true
+    # One building per section. A lot whose slug has no page yet is drawn but not linked.
+    options:
+      lots:
+        - { building: hall, name: Town Hall, label: home, slug: index }
+        - { building: press, name: The Press, label: journal, slug: journal }
+        - { building: square, name: The Square, label: thoughts, slug: thoughts }
+        - { building: workshop, name: The Workshop, label: projects, slug: workshop }
+        - { building: greenhouse, name: The Greenhouse, label: garden, slug: garden }
+        - { building: house, name: Visitor Centre, label: about, slug: about }
+    layout:
+      position: footer
+      priority: 10
+  - source: ./plugins/town-census
+    enabled: true
+    layout:
+      position: left
+      priority: 60
+  - source: ./plugins/town-crier
+    enabled: true
+    # Filler text for now: replace with your own, or remove the options to hide the block.
+    options:
+      status: lorem ipsum dolor
+      items:
+        - { label: reading, text: Sit amet consectetur }
+        - { label: building, text: Adipiscing elit sed }
+        - { label: hearing, text: do eiusmod tempor }
+    layout:
+      position: right
+      priority: 40
 layout:
   groups:
     toolbar:
-      priority: 35
+      priority: 70
       direction: row
       gap: 0.5rem
   byPageType:
@@ -278,12 +336,8 @@ layout:
     folder:
       exclude:
         - reader-mode
-      positions:
-        right: []
     tag:
       exclude:
         - reader-mode
-      positions:
-        right: []
     canvas: {}
     bases: {}

@@ -1,18 +1,18 @@
 ---
 title: About this town
-description: A small map of the site.
+description: Sed cursus ante dapibus diam.
 tags:
   - town
 ---
 
-This is Talita’s notebook-shaped town: public enough to visit, unfinished enough to remain alive.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit: integer nec odio, praesent libero sed cursus ante dapibus diam.
 
 ---
 
 ## The map
 
-[[Garden|The Garden]] holds observations and rituals. [[Reading Room|The Reading Room]] holds the sentences and books that stay in conversation. The paths between them matter as much as the rooms.
+[[Garden|Sed nisi]] nulla quis sem at nibh elementum imperdiet. [[Reading Room|Duis sagittis]] ipsum praesent mauris fusce nec tellus sed augue semper porta. Mauris massa vestibulum lacinia arcu eget nulla.
 
 ## How to wander
 
-Follow links, browse the nested tags, or use the reading rail on longer pages. Nothing here needs to be read in order.
+Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero.

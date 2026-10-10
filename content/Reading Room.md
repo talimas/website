@@ -1,18 +1,18 @@
 ---
 title: The Reading Room
-description: Books, sentences, and nearby thoughts.
+description: Tincidunt sed euismod in nibh.
 tags:
   - town/reading-room
 ---
 
-The reading room is for keeping company with a thought after its book has closed.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, quisque volutpat condimentum velit.
 
 ---
 
 ## On the shelf
 
-- [[Reading Room/How to Keep a Sentence|How to Keep a Sentence]]
+- [[Reading Room/How to Keep a Sentence|Class aptent taciti sociosqu]]
 
 ## A little doctrine
 
-Read promiscuously; reread faithfully. Bring what follows you back to [[Garden]].
+Ad litora torquent per conubia nostra; per inceptos himenaeos. Nam nec ante sed lacinia [[Garden|urna non tincidunt]].
