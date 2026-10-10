@@ -202,10 +202,12 @@ function runtime() {
     })
 
     const onResize = () => { paint(); centre() }
+    const onTheme = () => requestAnimationFrame(paint) // light/dark toggle: redraw in the new colours
     window.addEventListener("resize", onResize)
+    document.addEventListener("themechange", onTheme)
     paint(); centre()
     if (document.fonts && document.fonts.load) document.fonts.load(`36px "${colours().font}"`).then(paintSky).catch(() => {})
-    cleanup = () => window.removeEventListener("resize", onResize)
+    cleanup = () => { window.removeEventListener("resize", onResize); document.removeEventListener("themechange", onTheme) }
   }
   document.addEventListener("nav", setup)
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", setup, { once: true })

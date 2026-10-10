@@ -39,15 +39,15 @@ configuration:
         highlight: "#C8F169AA"
         textHighlight: "#E0915A77"
       darkMode:
-        light: "#B2B9F9"
-        lightgray: "#8E96E6"
-        gray: "#3E4280"
-        darkgray: "#1E2152"
-        dark: "#1E2152"
-        secondary: "#3A3DA8"
-        tertiary: "#A82672"
-        highlight: "#C8F169AA"
-        textHighlight: "#E0915A77"
+        light: "#1A1B45"
+        lightgray: "#3A3D85"
+        gray: "#A3A8DC"
+        darkgray: "#E6E7FA"
+        dark: "#B2B9F9"
+        secondary: "#C8F169"
+        tertiary: "#F5A3D0"
+        highlight: "#B2B9F92E"
+        textHighlight: "#FFE58A40"
 plugins:
   - source: "@quartz-community/created-modified-date"
     enabled: true
@@ -224,7 +224,7 @@ plugins:
       position: left
       priority: 10
   - source: "@quartz-community/darkmode"
-    enabled: false
+    enabled: true
     layout:
       position: left
       priority: 30

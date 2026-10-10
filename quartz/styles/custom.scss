@@ -22,6 +22,20 @@
   --pixel: "Silkscreen", ui-monospace, monospace;
 }
 
+// Night: the same periwinkle turned right down to indigo. No orange after dark:
+// the warm fill and anything lit both become firefly yellow.
+:root[saved-theme="dark"] {
+  color-scheme: dark;
+
+  --card: #252762;
+  --town-ink: #1a1b45;
+  --town-light: #ffe58a;
+  --town-warm: #ffe58a;
+  --pop-1: #86e3ce;
+  --pop-2: #ffe58a;
+  --pop-3: #c7a4f7;
+}
+
 @mixin label {
   color: var(--dark);
   font-family: var(--bodyFont);
@@ -578,7 +592,8 @@ button.toc-header,
   }
 }
 
-.readermode {
+.readermode,
+.darkmode {
   display: block; // no baseline gap, so it lines up with the search box
   position: relative;
   flex: none;
@@ -797,6 +812,11 @@ a.internal.tag-link {
 .tags li:nth-child(3n + 2) a.tag-link {
   background: color-mix(in srgb, var(--town-warm) 55%, transparent);
   color: var(--dark);
+}
+
+[saved-theme="dark"] .tags li:nth-child(3n + 2) a.tag-link {
+  background: color-mix(in srgb, var(--town-warm) 22%, transparent);
+  color: var(--town-warm);
 }
 
 .tags li:nth-child(3n) a.tag-link {
