@@ -301,22 +301,92 @@ button.toc-header,
   }
 }
 
-// Folding. Quartz closes these blocks by squeezing their height inside a flex column,
-// which does nothing in this layout, so hide the contents outright instead.
-button.toc-header.collapsed ~ .toc-content,
-.toc .toc-content.collapsed {
-  display: none !important;
+// Folding. Each foldable plot is a two-row grid: its heading, then its contents.
+// Closing animates the second row from its natural height down to nothing, so the
+// block slides shut (and open) at exactly the height of what is inside it.
+$fold-time: 0.28s;
+
+@mixin fold-open {
+  min-height: 0;
+  overflow: hidden;
+  opacity: 1;
+  visibility: visible !important;
+  transition:
+    padding-top $fold-time ease,
+    padding-bottom $fold-time ease,
+    opacity $fold-time ease,
+    visibility 0s;
+}
+
+@mixin fold-shut {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  opacity: 0;
+  visibility: hidden !important;
+  transition:
+    padding-top $fold-time ease,
+    padding-bottom $fold-time ease,
+    opacity $fold-time ease,
+    visibility 0s $fold-time;
+}
+
+// (.sidebar.sidebar: these must out-rank the "every side block is a plot" rule above)
+.page > #quartz-body .sidebar.sidebar > .explorer,
+.page > #quartz-body .sidebar.sidebar > .toc,
+.page > #quartz-body .sidebar.sidebar > .town-plot {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: minmax(0, 1fr);
+  transition: grid-template-rows $fold-time ease;
+}
+
+.explorer > .explorer-content,
+.toc > .toc-content,
+.town-plot > .in {
+  @include fold-open;
+}
+
+.explorer button.title-button svg,
+button.toc-header svg {
+  transition: transform $fold-time ease;
+}
+
+// on this page (every width)
+.page > #quartz-body .sidebar > .toc:has(> button.toc-header.collapsed) {
+  grid-template-rows: auto 0fr;
+
+  > .toc-content {
+    @include fold-shut;
+  }
 }
 
 button.toc-header.collapsed,
 .explorer.collapsed > button.title-button {
-  border-bottom: 0;
+  border-bottom-color: transparent;
 }
 
+button.toc-header,
+.explorer > button.title-button,
+.town-plot > h4 {
+  transition: border-bottom-color $fold-time ease;
+}
+
+// street directory, wider screens (on phones it folds with its own class; see further down)
 @media all and not ($mobile) {
-  // (on phones the directory folds with its own class instead; see further down)
-  .explorer.collapsed > .explorer-content {
-    display: none !important; // the explorer's own stylesheet loads later and would win otherwise
+  .page > #quartz-body .sidebar > .explorer.collapsed {
+    grid-template-rows: auto 0fr;
+
+    > .explorer-content {
+      @include fold-shut;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar > *,
+  .sidebar > * > *,
+  .sidebar svg {
+    transition: none !important;
   }
 }
 
@@ -690,19 +760,24 @@ button.toc-header.collapsed,
       margin: 0;
       background: none;
       padding: 8px 12px 12px;
-      overflow: visible;
       transform: none !important;
-      transition: none;
-      visibility: visible !important;
     }
 
     // folded until its heading is tapped (the class is toggled by plugins/town-masthead)
-    &:not(.town-open) > .explorer-content {
-      display: none !important;
+    &:not(.town-open) {
+      grid-template-rows: auto 0fr;
+
+      > .explorer-content {
+        @include fold-shut;
+      }
+
+      > button.title-button {
+        border-bottom-color: transparent;
+      }
     }
 
-    &:not(.town-open) > button.title-button {
-      border-bottom: 0;
+    &.town-open > button.title-button {
+      border-bottom-color: var(--dark);
     }
 
     > button.title-button svg {
@@ -735,12 +810,16 @@ button.toc-header.collapsed,
     content: "–";
   }
 
-  .sidebar .town-plot:not(.town-open) > h4 {
-    border-bottom: 0;
-  }
+  .page > #quartz-body .sidebar > .town-plot:not(.town-open) {
+    grid-template-rows: auto 0fr;
 
-  .sidebar .town-plot:not(.town-open) > :not(h4) {
-    display: none;
+    > h4 {
+      border-bottom-color: transparent;
+    }
+
+    > .in {
+      @include fold-shut;
+    }
   }
 
   .sidebar .toc .toc-content {
