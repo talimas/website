@@ -192,12 +192,49 @@ function runtime() {
       head.onclick = () => head.parentElement.classList.toggle("town-open")
     })
 
+    // Folding plots slide open and shut. CSS only says whether a plot's contents are
+    // displayed; here each change of state is animated at the contents' real height.
+    const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    const watchers = []
+    document.querySelectorAll(".sidebar .explorer > .explorer-content, .sidebar .toc > .toc-content, .sidebar .town-plot > .in").forEach((el) => {
+      const shown = () => getComputedStyle(el).display !== "none"
+      let open = shown(), natural = open ? getComputedStyle(el).display : "block", anim = null
+      const release = () => { el.style.removeProperty("display"); el.style.removeProperty("overflow"); el.style.removeProperty("box-sizing") }
+      const peek = () => { // what CSS alone says, ignoring the display we force while sliding shut
+        const forced = el.style.getPropertyValue("display")
+        if (!forced) return shown()
+        el.style.removeProperty("display"); const v = shown(); el.style.setProperty("display", forced, "important")
+        return v
+      }
+      const change = () => {
+        const want = peek()
+        if (want === open) return
+        const at = anim ? el.getBoundingClientRect().height : null // mid-slide: carry on from here
+        if (anim) { anim.onfinish = null; anim.cancel(); anim = null }
+        release()
+        open = want
+        if (open) natural = getComputedStyle(el).display
+        if (calm || !el.animate) return
+        el.style.setProperty("display", natural, "important"); el.style.overflow = "hidden"; el.style.boxSizing = "border-box"
+        const cs = getComputedStyle(el), full = el.offsetHeight
+        const lo = { height: "0px", paddingTop: "0px", paddingBottom: "0px", opacity: 0 }
+        const hi = { height: full + "px", paddingTop: cs.paddingTop, paddingBottom: cs.paddingBottom, opacity: 1 }
+        const from = at === null ? (open ? lo : hi) : { ...(open ? lo : hi), height: Math.min(at, full) + "px" }
+        anim = el.animate([from, open ? hi : lo], { duration: 320, easing: "cubic-bezier(0.33, 1, 0.68, 1)" })
+        anim.onfinish = () => { anim = null; release() }
+      }
+      const mo = new MutationObserver(change)
+      const plot = el.parentElement
+      ;[plot, el, ...plot.querySelectorAll(":scope > button")].forEach((n) => mo.observe(n, { attributes: true, attributeFilter: ["class"] }))
+      watchers.push(mo)
+    })
+
     const onResize = () => { paint(); centre() }
     const onTheme = () => requestAnimationFrame(paint) // light/dark toggle: redraw in the new colours
     window.addEventListener("resize", onResize)
     document.addEventListener("themechange", onTheme)
     paint(); centre()
-    cleanup = () => { window.removeEventListener("resize", onResize); document.removeEventListener("themechange", onTheme) }
+    cleanup = () => { window.removeEventListener("resize", onResize); document.removeEventListener("themechange", onTheme); watchers.forEach((w) => w.disconnect()) }
   }
   document.addEventListener("nav", setup)
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", setup, { once: true })

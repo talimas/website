@@ -301,92 +301,22 @@ button.toc-header,
   }
 }
 
-// Folding. Each foldable plot is a two-row grid: its heading, then its contents.
-// Closing animates the second row from its natural height down to nothing, so the
-// block slides shut (and open) at exactly the height of what is inside it.
-$fold-time: 0.28s;
-
-@mixin fold-open {
-  min-height: 0;
-  overflow: hidden;
-  opacity: 1;
-  visibility: visible !important;
-  transition:
-    padding-top $fold-time ease,
-    padding-bottom $fold-time ease,
-    opacity $fold-time ease,
-    visibility 0s;
-}
-
-@mixin fold-shut {
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  opacity: 0;
-  visibility: hidden !important;
-  transition:
-    padding-top $fold-time ease,
-    padding-bottom $fold-time ease,
-    opacity $fold-time ease,
-    visibility 0s $fold-time;
-}
-
-// (.sidebar.sidebar: these must out-rank the "every side block is a plot" rule above)
-.page > #quartz-body .sidebar.sidebar > .explorer,
-.page > #quartz-body .sidebar.sidebar > .toc,
-.page > #quartz-body .sidebar.sidebar > .town-plot {
-  display: grid;
-  grid-template-rows: auto 1fr;
-  grid-template-columns: minmax(0, 1fr);
-  transition: grid-template-rows $fold-time ease;
-}
-
-.explorer > .explorer-content,
-.toc > .toc-content,
-.town-plot > .in {
-  @include fold-open;
-}
-
-.explorer button.title-button svg,
-button.toc-header svg {
-  transition: transform $fold-time ease;
-}
-
-// on this page (every width)
-.page > #quartz-body .sidebar > .toc:has(> button.toc-header.collapsed) {
-  grid-template-rows: auto 0fr;
-
-  > .toc-content {
-    @include fold-shut;
-  }
+// Folding. A closed block's contents are simply not displayed; the slide between the
+// two states is animated by plugins/town-masthead, which measures the real height.
+button.toc-header.collapsed ~ .toc-content,
+.toc .toc-content.collapsed {
+  display: none !important;
 }
 
 button.toc-header.collapsed,
 .explorer.collapsed > button.title-button {
-  border-bottom-color: transparent;
+  border-bottom: 0;
 }
 
-button.toc-header,
-.explorer > button.title-button,
-.town-plot > h4 {
-  transition: border-bottom-color $fold-time ease;
-}
-
-// street directory, wider screens (on phones it folds with its own class; see further down)
 @media all and not ($mobile) {
-  .page > #quartz-body .sidebar > .explorer.collapsed {
-    grid-template-rows: auto 0fr;
-
-    > .explorer-content {
-      @include fold-shut;
-    }
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .sidebar > *,
-  .sidebar > * > *,
-  .sidebar svg {
-    transition: none !important;
+  // (on phones the directory folds with its own class instead; see further down)
+  .explorer.collapsed > .explorer-content {
+    display: none !important; // the explorer's own stylesheet loads later and would win otherwise
   }
 }
 
@@ -417,7 +347,8 @@ button.toc-header,
 // street directory
 .sidebar .explorer {
   .explorer-content {
-    padding: 8px 12px 12px;
+    margin: 0; // Quartz adds a top margin here, which pushed the first entry down
+    padding: 6px 12px 12px;
     font-family: var(--bodyFont);
     font-size: 15px;
 
@@ -445,7 +376,8 @@ button.toc-header,
 
     ul ul,
     .folder-outer > ul {
-      margin: 2px 0 4px 3px;
+      // no vertical margin: it would still take up room while the folder is shut
+      margin: 0 0 0 3px;
       border-left: var(--rule);
       padding-left: 12px;
     }
@@ -759,25 +691,20 @@ button.toc-header,
       max-height: none;
       margin: 0;
       background: none;
-      padding: 8px 12px 12px;
+      padding: 6px 12px 12px;
+      overflow: visible;
       transform: none !important;
+      transition: none;
+      visibility: visible !important;
     }
 
     // folded until its heading is tapped (the class is toggled by plugins/town-masthead)
-    &:not(.town-open) {
-      grid-template-rows: auto 0fr;
-
-      > .explorer-content {
-        @include fold-shut;
-      }
-
-      > button.title-button {
-        border-bottom-color: transparent;
-      }
+    &:not(.town-open) > .explorer-content {
+      display: none !important;
     }
 
-    &.town-open > button.title-button {
-      border-bottom-color: var(--dark);
+    &:not(.town-open) > button.title-button {
+      border-bottom: 0;
     }
 
     > button.title-button svg {
@@ -810,16 +737,12 @@ button.toc-header,
     content: "–";
   }
 
-  .page > #quartz-body .sidebar > .town-plot:not(.town-open) {
-    grid-template-rows: auto 0fr;
+  .sidebar .town-plot:not(.town-open) > h4 {
+    border-bottom: 0;
+  }
 
-    > h4 {
-      border-bottom-color: transparent;
-    }
-
-    > .in {
-      @include fold-shut;
-    }
+  .sidebar .town-plot:not(.town-open) > :not(h4) {
+    display: none;
   }
 
   .sidebar .toc .toc-content {
