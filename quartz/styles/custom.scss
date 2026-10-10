@@ -316,7 +316,7 @@ button.toc-header.collapsed,
 @media all and not ($mobile) {
   // (on phones the directory folds with its own class instead; see further down)
   .explorer.collapsed > .explorer-content {
-    display: none;
+    display: none !important; // the explorer's own stylesheet loads later and would win otherwise
   }
 }
 
@@ -596,19 +596,34 @@ button.toc-header.collapsed,
     }
   }
 
-  > .search-container > .search-space {
-    > * {
-      border: 1px solid var(--dark);
-      border-radius: 0;
-      background: var(--card);
-      box-shadow: none;
-    }
+  > .search-container {
+    background: color-mix(in srgb, var(--light) 80%, transparent);
 
-    > input {
-      margin-bottom: 0.75rem;
-      padding: 0.7rem 1rem;
-      font-family: var(--bodyFont);
-      font-size: 15px;
+    > .search-space {
+      > input {
+        margin-bottom: 0.75rem;
+        border: 1px solid var(--dark);
+        border-radius: 0;
+        background: var(--card);
+        box-shadow: none;
+        padding: 0.7rem 1rem;
+        font-family: var(--bodyFont);
+        font-size: 15px;
+      }
+
+      // the results box only gets its frame once there are results to show;
+      // empty, it used to draw as a stray line under the search field
+      > .search-layout {
+        border: 0;
+        border-radius: 0;
+        background: none;
+        box-shadow: none;
+
+        &.display-results {
+          border: 1px solid var(--dark);
+          background: var(--card);
+        }
+      }
     }
   }
 }
@@ -683,7 +698,7 @@ button.toc-header.collapsed,
 
     // folded until its heading is tapped (the class is toggled by plugins/town-masthead)
     &:not(.town-open) > .explorer-content {
-      display: none;
+      display: none !important;
     }
 
     &:not(.town-open) > button.title-button {

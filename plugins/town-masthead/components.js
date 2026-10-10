@@ -24,7 +24,7 @@ const CSS = `
 .town-masthead canvas{display:block;width:100%;image-rendering:pixelated}
 .town-banner{position:relative;overflow:hidden;aspect-ratio:1040/270;border:1px solid var(--dark);border-bottom:0;border-radius:50% 50% 0 0/100% 100% 0 0}
 .town-sky{position:absolute;inset:0;height:100%}
-.town-title{position:absolute;left:0;right:0;top:27%;transform:translateY(-50%);margin:0;text-align:center;white-space:nowrap;pointer-events:none;color:var(--town-ink,var(--dark));font:400 clamp(40px,12vw,72px)/1 var(--town-display,var(--headerFont));text-shadow:6.0px 0.0px 0 var(--town-paper,var(--light)),5.5px 2.3px 0 var(--town-paper,var(--light)),4.2px 4.2px 0 var(--town-paper,var(--light)),2.3px 5.5px 0 var(--town-paper,var(--light)),0.0px 6.0px 0 var(--town-paper,var(--light)),-2.3px 5.5px 0 var(--town-paper,var(--light)),-4.2px 4.2px 0 var(--town-paper,var(--light)),-5.5px 2.3px 0 var(--town-paper,var(--light)),-6.0px 0.0px 0 var(--town-paper,var(--light)),-5.5px -2.3px 0 var(--town-paper,var(--light)),-4.2px -4.2px 0 var(--town-paper,var(--light)),-2.3px -5.5px 0 var(--town-paper,var(--light)),-0.0px -6.0px 0 var(--town-paper,var(--light)),2.3px -5.5px 0 var(--town-paper,var(--light)),4.2px -4.2px 0 var(--town-paper,var(--light)),5.5px -2.3px 0 var(--town-paper,var(--light)),3.0px 0.0px 0 var(--town-paper,var(--light)),2.1px 2.1px 0 var(--town-paper,var(--light)),0.0px 3.0px 0 var(--town-paper,var(--light)),-2.1px 2.1px 0 var(--town-paper,var(--light)),-3.0px 0.0px 0 var(--town-paper,var(--light)),-2.1px -2.1px 0 var(--town-paper,var(--light)),-0.0px -3.0px 0 var(--town-paper,var(--light)),2.1px -2.1px 0 var(--town-paper,var(--light))}
+.town-title{position:absolute;left:0;right:0;top:27%;transform:translateY(-50%);margin:0;text-align:center;white-space:nowrap;pointer-events:none;color:var(--banner-ink,#1e2152);font:400 clamp(40px,12vw,72px)/1 var(--town-display,var(--headerFont));text-shadow:6.0px 0.0px 0 var(--banner-paper,#b2b9f9),5.5px 2.3px 0 var(--banner-paper,#b2b9f9),4.2px 4.2px 0 var(--banner-paper,#b2b9f9),2.3px 5.5px 0 var(--banner-paper,#b2b9f9),0.0px 6.0px 0 var(--banner-paper,#b2b9f9),-2.3px 5.5px 0 var(--banner-paper,#b2b9f9),-4.2px 4.2px 0 var(--banner-paper,#b2b9f9),-5.5px 2.3px 0 var(--banner-paper,#b2b9f9),-6.0px 0.0px 0 var(--banner-paper,#b2b9f9),-5.5px -2.3px 0 var(--banner-paper,#b2b9f9),-4.2px -4.2px 0 var(--banner-paper,#b2b9f9),-2.3px -5.5px 0 var(--banner-paper,#b2b9f9),-0.0px -6.0px 0 var(--banner-paper,#b2b9f9),2.3px -5.5px 0 var(--banner-paper,#b2b9f9),4.2px -4.2px 0 var(--banner-paper,#b2b9f9),5.5px -2.3px 0 var(--banner-paper,#b2b9f9),3.0px 0.0px 0 var(--banner-paper,#b2b9f9),2.1px 2.1px 0 var(--banner-paper,#b2b9f9),0.0px 3.0px 0 var(--banner-paper,#b2b9f9),-2.1px 2.1px 0 var(--banner-paper,#b2b9f9),-3.0px 0.0px 0 var(--banner-paper,#b2b9f9),-2.1px -2.1px 0 var(--banner-paper,#b2b9f9),-0.0px -3.0px 0 var(--banner-paper,#b2b9f9),2.1px -2.1px 0 var(--banner-paper,#b2b9f9)}
 .town-street-scroll{position:absolute;left:0;right:0;bottom:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
 .town-street-scroll::-webkit-scrollbar{display:none}
 .town-street-inner{position:relative;box-sizing:border-box;width:max(100%,900px)}
@@ -170,7 +170,12 @@ function runtime() {
       })
       x.fillStyle = css(ink); x.fillRect(0, h - 2, w, 2)
     }
-    const paint = () => { paintSky(); paintStreet() }
+    const paint = () => {
+      // the title's ink and halo follow the banner's own two tones, in light and dark alike
+      const { ink, paper } = colours()
+      root.style.setProperty("--banner-ink", css(ink)); root.style.setProperty("--banner-paper", css(paper))
+      paintSky(); paintStreet()
+    }
     function centre() { // bring the current building into the middle of the arch
       const lot = root.querySelector(".town-lots .on")
       if (!lot || scroller.scrollWidth <= scroller.clientWidth) return
