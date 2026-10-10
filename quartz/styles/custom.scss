@@ -37,23 +37,20 @@
   --pop-3: #c7a4f7;
 }
 
-// Switching between day and night: for half a second every colour on the page eases to
-// its new value. The class is added by plugins/town-masthead only while the theme changes,
-// so ordinary hover and focus changes stay instant.
-html.theme-fading,
-html.theme-fading *,
-html.theme-fading *::before,
-html.theme-fading *::after {
-  transition:
-    background-color 0.45s ease,
-    color 0.45s ease,
-    border-color 0.45s ease,
-    outline-color 0.45s ease,
-    text-decoration-color 0.45s ease,
-    fill 0.45s ease,
-    stroke 0.45s ease,
-    box-shadow 0.45s ease,
-    text-shadow 0.45s ease !important;
+// Switching between day and night is one cross-fade of the whole page (a view transition,
+// started by plugins/town-masthead), so everything changes together. This sets its pace,
+// and while it runs no element may animate on its own clock.
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.45s;
+  animation-timing-function: ease;
+}
+
+html.theme-switching,
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition: none !important;
 }
 
 @mixin label {
@@ -227,7 +224,8 @@ body {
       order: 4;
     }
 
-    .sidebar > .town-crier {
+    .sidebar > .town-crier,
+    .sidebar > .town-gate {
       order: 5;
     }
 
@@ -685,6 +683,49 @@ button.toc-header.collapsed,
     margin: 0;
     transform: translate(-50%, -50%);
   }
+}
+
+// Wider screens: the two side columns always end level with each other and with the note.
+// All three are as tall as the tallest; each column's last plot simply stretches down to
+// the shared bottom edge, so the closing rules line up.
+@media all and not ($mobile) {
+  .page > #quartz-body .sidebar.sidebar {
+    align-self: stretch;
+
+    // plugins/town-masthead adds this as the last thing in each column. It takes whatever
+    // height is left over and draws a bit of town in it, generated to fit (see drawLot).
+    > .town-spare {
+      position: relative;
+      flex: 1 1 0;
+      min-height: 0;
+
+      &.none {
+        border-bottom: 0;
+      }
+
+      // a panel with the visitors panel's margins and stepped pixel corners, so the two read as a pair
+      canvas {
+        position: absolute;
+        top: 10px;
+        left: 12px;
+        width: calc(100% - 24px);
+        height: 0; // set by the script to fit the room there is
+        image-rendering: pixelated;
+        clip-path: polygon(0 4px, 2px 4px, 2px 2px, 4px 2px, 4px 0, calc(100% - 4px) 0, calc(100% - 4px) 2px, calc(100% - 2px) 2px, calc(100% - 2px) 4px, 100% 4px, 100% calc(100% - 4px), calc(100% - 2px) calc(100% - 4px), calc(100% - 2px) calc(100% - 2px), calc(100% - 4px) calc(100% - 2px), calc(100% - 4px) 100%, 4px 100%, 4px calc(100% - 2px), 2px calc(100% - 2px), 2px calc(100% - 4px), 0 calc(100% - 4px));
+      }
+    }
+  }
+}
+
+@media all and ($mobile) {
+  .town-spare {
+    display: none !important;
+  }
+}
+
+// Quartz flashes a coloured bar across the top of the window while it loads the next page
+.navigation-progress {
+  display: none !important;
 }
 
 // phones: the street directory opens Quartz's slide-in list from one labelled row,

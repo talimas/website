@@ -1,0 +1,29 @@
+{
+  "name": "@talita/town-gate",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./components": "./components.js"
+  },
+  "peerDependencies": {
+    "preact": "^10.28.2"
+  },
+  "quartz": {
+    "name": "town-gate",
+    "displayName": "Town gate",
+    "description": "A live arrivals board: who else is visiting right now, with shared cursors (via playhtml).",
+    "version": "1.0.0",
+    "quartzVersion": ">=5.0.0",
+    "category": "component",
+    "defaultOrder": 56,
+    "components": {
+      "TownGate": {
+        "displayName": "Town gate",
+        "defaultPosition": "right",
+        "defaultPriority": 40
+      }
+    }
+  }
+}

@@ -193,6 +193,50 @@ function runtime() {
       head.onclick = () => head.parentElement.classList.toggle("town-open")
     })
 
+    // Spare lots. Whatever height a side column has left over becomes a stretch of the town
+    // wall, so the columns always end level. The bricks are the same faint tint as the
+    // visitors panel (the text colour at 9%), with the page showing through as mortar. They
+    // are laid up from the bottom edge, so a sliver shows a course or two and a tall gap
+    // shows more wall, and nothing inside moves when the space changes (which keeps folding
+    // a plot smooth). Pixels are the banner's size.
+    function drawLot(spare) {
+      const c = spare.firstElementChild, room = spare.getBoundingClientRect().height
+      // the wall is a panel set in from the plot's edges exactly like the visitors panel
+      // (12px at the sides, 10px above, 14px below); in a tight gap the margins shrink first
+      const give = Math.max(0, Math.min(1, (room - 8) / 40))
+      const above = Math.round(10 * give), tall = Math.max(0, Math.floor(room - above - Math.round(14 * give)))
+      c.style.top = above + "px"; c.style.height = tall + "px" // a canvas ignores top+bottom, so its height is set outright
+      c.style.display = tall < 2 ? "none" : ""
+      const U = Math.round(c.getBoundingClientRect().width / 2), V = Math.round(tall / 2) // 2 screen pixels per canvas pixel
+      spare.classList.toggle("none", room < 4)
+      if (V < 2 || U < 10) { c.width = c.height = 1; return }
+      c.width = U; c.height = V
+      const x = c.getContext("2d")
+      x.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--dark").trim() || "#000"
+      x.globalAlpha = 0.09
+      const BW = 10, BH = 4 // a brick with its mortar
+      for (let row = 0; row * BH < V; row++) {
+        const bottom = V - row * BH, h = Math.min(BH - 1, bottom) // courses count up from the bottom edge
+        for (let left = (row % 2 ? BW / 2 : 0) - BW + 1; left < U; left += BW) x.fillRect(left, bottom - h, BW - 1, h)
+      }
+    }
+    const spares = []
+    if (window.matchMedia("(min-width: 801px)").matches) {
+      document.querySelectorAll("#quartz-body > .sidebar").forEach((col, i) => {
+        col.querySelectorAll(":scope > .town-spare").forEach((old) => old.remove())
+        const spare = document.createElement("div")
+        spare.className = "town-spare"; spare.setAttribute("aria-hidden", "true")
+        spare.appendChild(document.createElement("canvas"))
+        col.appendChild(spare)
+        spares.push([spare, i ? "east" : "west"])
+      })
+    }
+    const paintLots = () => spares.forEach(([spare]) => drawLot(spare))
+    // repaint in the same frame as the size change, so a folding plot above it never shows a stretched picture
+    const lotWatch = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(() => paintLots())
+    spares.forEach(([spare]) => lotWatch && lotWatch.observe(spare))
+    paintLots()
+
     // Folding plots slide open and shut. CSS only says whether a plot's contents are
     // displayed; here each change of state is animated at the contents' real height.
     const watchers = []
@@ -230,32 +274,32 @@ function runtime() {
     })
 
     const onResize = () => { paint(); centre() }
-    // Light/dark toggle. The page's colours ease across (see .theme-fading in custom.scss);
-    // the banner is a picture, so it cross-fades: a copy of the old drawing is laid on top
-    // of the freshly painted one and faded away.
-    let fadeTimer
-    const ghost = (c) => {
-      const g = document.createElement("canvas")
-      g.width = c.width; g.height = c.height
-      g.getContext("2d").drawImage(c, 0, 0)
-      g.setAttribute("aria-hidden", "true")
-      Object.assign(g.style, { position: "absolute", left: c.offsetLeft + "px", top: c.offsetTop + "px", width: c.offsetWidth + "px", height: c.offsetHeight + "px", pointerEvents: "none" })
-      c.after(g)
-      const a = g.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 450, easing: "ease" })
-      a.onfinish = a.oncancel = () => g.remove()
-    }
-    const onTheme = () => {
-      if (calm) { paint(); return }
-      const html = document.documentElement
-      html.classList.add("theme-fading")
-      clearTimeout(fadeTimer); fadeTimer = setTimeout(() => html.classList.remove("theme-fading"), 520)
-      if (sky.animate) { ghost(sky); ghost(street) }
-      paint()
-    }
+    // Light/dark toggle. The whole page changes as one: the browser cross-fades a snapshot
+    // of the old look into the new one (a view transition), so every element, the banner
+    // included, moves together and nothing can lag behind anything else. While it runs,
+    // elements' own CSS transitions are switched off (html.theme-switching) so none of them
+    // animates on a separate clock. Browsers without view transitions, and visitors who ask
+    // for reduced motion, get an instant switch, which is equally uniform.
+    const onTheme = () => { paint(); paintLots() }
     window.addEventListener("resize", onResize)
     document.addEventListener("themechange", onTheme)
+    // The toggle's own click is held, then replayed inside the transition.
+    const toggle = document.querySelector(".darkmode")
+    let replaying = false
+    const onToggle = (e) => {
+      if (replaying || calm || !document.startViewTransition) return
+      e.preventDefault(); e.stopImmediatePropagation()
+      const html = document.documentElement
+      html.classList.add("theme-switching")
+      const done = () => html.classList.remove("theme-switching")
+      try {
+        const t = document.startViewTransition(() => { replaying = true; try { toggle.click() } finally { replaying = false } })
+        t.finished.then(done, done)
+      } catch { done(); replaying = true; try { toggle.click() } finally { replaying = false } }
+    }
+    if (toggle) toggle.addEventListener("click", onToggle, true)
     paint(); centre()
-    cleanup = () => { window.removeEventListener("resize", onResize); document.removeEventListener("themechange", onTheme); watchers.forEach((w) => w.disconnect()) }
+    cleanup = () => { window.removeEventListener("resize", onResize); document.removeEventListener("themechange", onTheme); toggle && toggle.removeEventListener("click", onToggle, true); watchers.forEach((w) => w.disconnect()); lotWatch && lotWatch.disconnect() }
   }
   document.addEventListener("nav", setup)
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", setup, { once: true })

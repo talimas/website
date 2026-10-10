@@ -308,8 +308,14 @@ plugins:
     layout:
       position: left
       priority: 60
-  - source: ./plugins/town-crier
+  - source: ./plugins/town-gate
     enabled: true
+    # A register of who is visiting right now, each with a townsperson's name, plus shared cursors, via playhtml (https://playhtml.fun).
+    layout:
+      position: right
+      priority: 40
+  - source: ./plugins/town-crier
+    enabled: false
     # Filler text for now: replace with your own, or remove the options to hide the block.
     options:
       status: lorem ipsum dolor
