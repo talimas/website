@@ -134,6 +134,7 @@ function runtime() {
     const sky = root.querySelector(".town-sky"), street = root.querySelector(".town-street")
     const scroller = root.querySelector(".town-street-scroll"), lots = [...root.querySelectorAll(".town-lots > *")]
     let hover = -1
+    const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches
 
     function colours() {
       const cs = getComputedStyle(document.documentElement), v = (n) => cs.getPropertyValue(n)
@@ -194,7 +195,6 @@ function runtime() {
 
     // Folding plots slide open and shut. CSS only says whether a plot's contents are
     // displayed; here each change of state is animated at the contents' real height.
-    const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches
     const watchers = []
     document.querySelectorAll(".sidebar .explorer > .explorer-content, .sidebar .toc > .toc-content, .sidebar .town-plot > .in").forEach((el) => {
       const shown = () => getComputedStyle(el).display !== "none"
@@ -230,7 +230,28 @@ function runtime() {
     })
 
     const onResize = () => { paint(); centre() }
-    const onTheme = () => requestAnimationFrame(paint) // light/dark toggle: redraw in the new colours
+    // Light/dark toggle. The page's colours ease across (see .theme-fading in custom.scss);
+    // the banner is a picture, so it cross-fades: a copy of the old drawing is laid on top
+    // of the freshly painted one and faded away.
+    let fadeTimer
+    const ghost = (c) => {
+      const g = document.createElement("canvas")
+      g.width = c.width; g.height = c.height
+      g.getContext("2d").drawImage(c, 0, 0)
+      g.setAttribute("aria-hidden", "true")
+      Object.assign(g.style, { position: "absolute", left: c.offsetLeft + "px", top: c.offsetTop + "px", width: c.offsetWidth + "px", height: c.offsetHeight + "px", pointerEvents: "none" })
+      c.after(g)
+      const a = g.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 450, easing: "ease" })
+      a.onfinish = a.oncancel = () => g.remove()
+    }
+    const onTheme = () => {
+      if (calm) { paint(); return }
+      const html = document.documentElement
+      html.classList.add("theme-fading")
+      clearTimeout(fadeTimer); fadeTimer = setTimeout(() => html.classList.remove("theme-fading"), 520)
+      if (sky.animate) { ghost(sky); ghost(street) }
+      paint()
+    }
     window.addEventListener("resize", onResize)
     document.addEventListener("themechange", onTheme)
     paint(); centre()

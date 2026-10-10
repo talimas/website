@@ -37,6 +37,25 @@
   --pop-3: #c7a4f7;
 }
 
+// Switching between day and night: for half a second every colour on the page eases to
+// its new value. The class is added by plugins/town-masthead only while the theme changes,
+// so ordinary hover and focus changes stay instant.
+html.theme-fading,
+html.theme-fading *,
+html.theme-fading *::before,
+html.theme-fading *::after {
+  transition:
+    background-color 0.45s ease,
+    color 0.45s ease,
+    border-color 0.45s ease,
+    outline-color 0.45s ease,
+    text-decoration-color 0.45s ease,
+    fill 0.45s ease,
+    stroke 0.45s ease,
+    box-shadow 0.45s ease,
+    text-shadow 0.45s ease !important;
+}
+
 @mixin label {
   color: var(--dark);
   font-family: var(--bodyFont);
@@ -372,6 +391,13 @@ button.toc-header.collapsed,
 
     li {
       padding: 3px 0;
+    }
+
+    // Quartz leaves an empty marker item in the list (used for its scroll fade);
+    // it was taking up a blank row above the first entry
+    li:empty,
+    li.overflow-end {
+      display: none !important;
     }
 
     ul ul,
