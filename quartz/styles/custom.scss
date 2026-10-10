@@ -10,6 +10,7 @@
 
   --card: #e0e3fd; // the paved plot the note sits on
   --town-ink: #1e2152;
+  --town-paper: #b2b9f9; // the pale tone of the banner's sky, by day and by night
   --town-light: #c8f169; // lit windows, the moon
   --town-warm: #e0915a; // fills only, always with ink text on top
   --pop-1: #0e6a60;
@@ -297,6 +298,25 @@ button.toc-header,
     margin-left: auto;
     color: var(--dark);
     opacity: 0.65;
+  }
+}
+
+// Folding. Quartz closes these blocks by squeezing their height inside a flex column,
+// which does nothing in this layout, so hide the contents outright instead.
+button.toc-header.collapsed ~ .toc-content,
+.toc .toc-content.collapsed {
+  display: none !important;
+}
+
+button.toc-header.collapsed,
+.explorer.collapsed > button.title-button {
+  border-bottom: 0;
+}
+
+@media all and not ($mobile) {
+  // (on phones the directory folds with its own class instead; see further down)
+  .explorer.collapsed > .explorer-content {
+    display: none;
   }
 }
 

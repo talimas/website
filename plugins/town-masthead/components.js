@@ -24,6 +24,7 @@ const CSS = `
 .town-masthead canvas{display:block;width:100%;image-rendering:pixelated}
 .town-banner{position:relative;overflow:hidden;aspect-ratio:1040/270;border:1px solid var(--dark);border-bottom:0;border-radius:50% 50% 0 0/100% 100% 0 0}
 .town-sky{position:absolute;inset:0;height:100%}
+.town-title{position:absolute;left:0;right:0;top:27%;transform:translateY(-50%);margin:0;text-align:center;white-space:nowrap;pointer-events:none;color:var(--town-ink,var(--dark));font:400 clamp(40px,12vw,72px)/1 var(--town-display,var(--headerFont));text-shadow:6.0px 0.0px 0 var(--town-paper,var(--light)),5.5px 2.3px 0 var(--town-paper,var(--light)),4.2px 4.2px 0 var(--town-paper,var(--light)),2.3px 5.5px 0 var(--town-paper,var(--light)),0.0px 6.0px 0 var(--town-paper,var(--light)),-2.3px 5.5px 0 var(--town-paper,var(--light)),-4.2px 4.2px 0 var(--town-paper,var(--light)),-5.5px 2.3px 0 var(--town-paper,var(--light)),-6.0px 0.0px 0 var(--town-paper,var(--light)),-5.5px -2.3px 0 var(--town-paper,var(--light)),-4.2px -4.2px 0 var(--town-paper,var(--light)),-2.3px -5.5px 0 var(--town-paper,var(--light)),-0.0px -6.0px 0 var(--town-paper,var(--light)),2.3px -5.5px 0 var(--town-paper,var(--light)),4.2px -4.2px 0 var(--town-paper,var(--light)),5.5px -2.3px 0 var(--town-paper,var(--light)),3.0px 0.0px 0 var(--town-paper,var(--light)),2.1px 2.1px 0 var(--town-paper,var(--light)),0.0px 3.0px 0 var(--town-paper,var(--light)),-2.1px 2.1px 0 var(--town-paper,var(--light)),-3.0px 0.0px 0 var(--town-paper,var(--light)),-2.1px -2.1px 0 var(--town-paper,var(--light)),-0.0px -3.0px 0 var(--town-paper,var(--light)),2.1px -2.1px 0 var(--town-paper,var(--light))}
 .town-street-scroll{position:absolute;left:0;right:0;bottom:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
 .town-street-scroll::-webkit-scrollbar{display:none}
 .town-street-inner{position:relative;box-sizing:border-box;width:max(100%,900px)}
@@ -41,6 +42,7 @@ const CSS = `
 .town-plates .soon{opacity:.55}
 @media (max-width:800px){
 .town-banner{aspect-ratio:auto;height:152px;border-radius:50% 50% 0 0/44px 44px 0 0}
+.town-title{top:38px}
 .town-street-inner{width:max(100%,540px);padding:0 10px}
 .town-street-inner canvas{height:90px}
 .town-lots{inset:0 10px}
@@ -66,31 +68,12 @@ function runtime() {
   }
   const css = (k) => `rgb(${k[0]},${k[1]},${k[2]})`
   const lum = (k) => 0.3 * k[0] + 0.59 * k[1] + 0.11 * k[2]
-  const grey = (v) => { v = Math.round(Math.max(0, Math.min(1, v)) * 255); return `rgb(${v},${v},${v})` }
   const rng = (seed) => () => { seed = (seed + 0x6d2b79f5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296 }
 
-  function dither(c, ink, paper) {
-    const x = c.getContext("2d"), w = c.width, h = c.height, d = x.getImageData(0, 0, w, h), p = d.data
-    for (let y = 0; y < h; y++) for (let X = 0; X < w; X++) {
-      const i = (y * w + X) * 4, v = (p[i] * 0.3 + p[i + 1] * 0.59 + p[i + 2] * 0.11) / 255
-      const k = v > (B4[(y & 3) * 4 + (X & 3)] + 0.5) / 16 ? paper : ink
-      p[i] = k[0]; p[i + 1] = k[1]; p[i + 2] = k[2]; p[i + 3] = 255
-    }
-    x.putImageData(d, 0, 0)
-  }
-  function stamp(c, text, font, cx, cy, ink, paper) { // hard-edged lettering with a paper halo
-    const o = document.createElement("canvas"); o.width = c.width; o.height = c.height
-    const ox = o.getContext("2d"); ox.font = font; ox.textAlign = "center"; ox.textBaseline = "middle"; ox.lineJoin = "round"
-    ox.lineWidth = 6; ox.strokeStyle = "#f00"; ox.strokeText(text, cx, cy); ox.fillStyle = "#00f"; ox.fillText(text, cx, cy)
-    const s = ox.getImageData(0, 0, o.width, o.height).data, x = c.getContext("2d"), d = x.getImageData(0, 0, c.width, c.height), p = d.data
-    for (let i = 0; i < s.length; i += 4) if (s[i + 3] > 110) { const k = s[i + 2] > s[i] ? ink : paper; p[i] = k[0]; p[i + 1] = k[1]; p[i + 2] = k[2] }
-    x.putImageData(d, 0, 0)
-  }
-  function hills(x, w, h, base, amp, tone, f) {
-    x.fillStyle = grey(tone); x.beginPath(); x.moveTo(0, h)
-    for (let i = 0; i <= w; i += 2) x.lineTo(i, base - Math.sin(i / f) * amp - Math.sin(i / (f * 0.37) + 1) * amp * 0.4)
-    x.lineTo(w, h); x.fill()
-  }
+  // Nothing here reads pixels back from a canvas (no getImageData): browsers with
+  // fingerprinting protection scramble or blank that data, which would wreck the picture.
+  // The sky is computed pixel by pixel and written out; everything else is filled rectangles.
+  const hillTop = (X, base, amp, f) => base - Math.sin(X / f) * amp - Math.sin(X / (f * 0.37) + 1) * amp * 0.4
   // Pixel pen: whole canvas pixels only. x is relative to the building's centre line, y is height above the ground.
   function pen(x, cx, ground, ink, paper, lit) {
     const I = css(ink)
@@ -156,20 +139,23 @@ function runtime() {
       const cs = getComputedStyle(document.documentElement), v = (n) => cs.getPropertyValue(n)
       const a = parse(v("--dark")), b = parse(v("--light"))
       const [ink, paper] = lum(a) < lum(b) ? [a, b] : [b, a]
-      const font = (v("--town-display") || v("--headerFont") || "serif").split(",")[0].trim().replace(/^["']|["']$/g, "")
-      return { ink, paper, lit: v("--town-light").trim() || css(paper), font }
+      return { ink, paper, lit: v("--town-light").trim() || css(paper) }
     }
     function paintSky() { // evening sky inside the arch, dithered to the two page tones, with one lit moon
-      const { ink, paper, lit, font } = colours(), box = sky.getBoundingClientRect()
+      const { ink, paper, lit } = colours(), box = sky.getBoundingClientRect()
       sky.width = Math.max(120, Math.round(box.width / 2)); sky.height = Math.max(40, Math.round(box.height / 2))
       const x = sky.getContext("2d"), w = sky.width, h = sky.height, r = rng(4)
-      const g = x.createLinearGradient(0, 0, 0, h); g.addColorStop(0, grey(0.42)); g.addColorStop(0.8, grey(0.97)); x.fillStyle = g; x.fillRect(0, 0, w, h)
-      x.fillStyle = grey(1); for (let i = 0; i < 40; i++) x.fillRect(Math.floor(r() * w), Math.floor(r() * h * 0.5), 1, 1)
-      hills(x, w, h, h * 0.8, 6, 0.82, 47)
-      dither(sky, ink, paper)
+      const stars = new Set(); for (let i = 0; i < 40; i++) stars.add(Math.floor(r() * h * 0.5) * w + Math.floor(r() * w))
+      const img = x.createImageData(w, h), p = img.data
+      for (let y = 0; y < h; y++) for (let X = 0; X < w; X++) {
+        let v = 0.42 + 0.55 * Math.min(1, y / (h * 0.8)) // darker overhead, pale at the horizon
+        if (stars.has(y * w + X)) v = 1
+        if (y >= hillTop(X, h * 0.8, 6, 47)) v = 0.82 // far hills
+        const k = v > (B4[(y & 3) * 4 + (X & 3)] + 0.5) / 16 ? paper : ink, i = (y * w + X) * 4
+        p[i] = k[0]; p[i + 1] = k[1]; p[i + 2] = k[2]; p[i + 3] = 255
+      }
+      x.putImageData(img, 0, 0)
       pen(x, Math.round(w * 0.2), Math.round(h * 0.58), ink, paper, lit).disc(0, 0, Math.round(h * 0.085), lit)
-      const size = Math.min(36, Math.floor(w / 7.4))
-      stamp(sky, sky.dataset.title || "", `${size}px "${font}", serif`, w / 2, h < 100 ? 19 : h * 0.27, ink, paper)
       x.fillStyle = css(ink); x.fillRect(0, h - 2, w, 2)
     }
     function paintStreet() { // the buildings, on their own strip so the street can be swiped along on a phone
@@ -206,7 +192,6 @@ function runtime() {
     window.addEventListener("resize", onResize)
     document.addEventListener("themechange", onTheme)
     paint(); centre()
-    if (document.fonts && document.fonts.load) document.fonts.load(`36px "${colours().font}"`).then(paintSky).catch(() => {})
     cleanup = () => { window.removeEventListener("resize", onResize); document.removeEventListener("themechange", onTheme) }
   }
   document.addEventListener("nav", setup)
@@ -239,7 +224,8 @@ export function TownMasthead(opts = {}) {
       h(
         "div",
         { class: "town-banner" },
-        h("canvas", { class: "town-sky", "data-title": opts.title ?? cfg?.pageTitle ?? "" }),
+        h("canvas", { class: "town-sky" }),
+        h("div", { class: "town-title", "aria-hidden": "true" }, opts.title ?? cfg?.pageTitle ?? ""),
         h(
           "div",
           { class: "town-street-scroll" },
