@@ -215,8 +215,9 @@ body {
       order: 6;
     }
 
+    // search, light/dark and reader mode sit just above the street directory
     .sidebar > .flex-component {
-      order: 7;
+      order: 1;
     }
 
     footer {
